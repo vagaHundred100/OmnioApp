@@ -1,2 +1,2 @@
-﻿1)
+﻿1)Account controller hazirdir
 2)
