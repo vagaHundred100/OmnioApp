@@ -12,3 +12,36 @@
 		1.8)Change passward
 		1.9)Activate user
 		1.10)Deactivate user
+
+ 
+ Icra olunmamish ishler :
+	
+	1)Search funksionnallig -- 
+		1.1)hardaki 5 user propertisine gore axtarish mumkun ola bilsin -- 
+			Name,Surname , Email , username,Role,Tenant
+		1.2) User isteniler fildleri bosh saxlaya biler
+
+	2)User profiler etmek - hardaki user oz datasini paroldan bashqa modefiy ede bilsin
+		2.1)User shekil qoya biler, deyishe biler
+		2.2)Oz yashadigi ve oxudugu yer haqqinda melumat vere biler
+		2.3)Oz activllik statusunu qoya biler yani bu deqiqe activdi yoxsa yox
+		2.4)Aciq yada qapali profil oldugunu teyin ede biler (ancaq doslardan mesag qebul ede biler yoxsa yox)
+
+
+	3)Chat funksionnaligini yaratmaq  -- whatsapa oxshar 
+		3.1)Bir user oburu uzere message gondere bilsin 
+		3.2)Obirsi uzer gelen messagi oxuya bilsin
+		3.3)bu messaglar her ikisinde messag tetixcesinde gorune bilesi shekilde qalsin 
+		3.4)Useer yazdigi messagi ozu ucun ve hammi ucun chatin yaddinan sile bilsin 
+		3.5) Youser yazdigi messagi redakte ede bilsin 
+		3.6)Chat da ne bash verirse hemin zaman butun ishtiraqcilar xeberi olmalidir
+		3.7)group chat funksionnalig ele olunmasi 
+
+	4)Dahbord yaratmaq -- hardaki umumi data gorunecek 
+		4.1)Neqeder messag yazilib
+		4.2)Neqeder messag oxunum
+		4.3)Neqeder messag oxunulmayib
+		4.4)Neqeder uzer var 
+		4.5)Userlerini ayliq , gunlik , ve saatliq aktivliyi
+			bu tarix arzinde nece user appdan istifade edib, neqeder ortalama 1 user messag yazib
+
