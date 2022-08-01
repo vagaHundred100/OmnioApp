@@ -9,6 +9,7 @@ namespace DAL.Domains
 {
     public class User : IdentityUser
     {
+        public bool IsEnabled { get; set; } = true;
         public string FirstName { get; set; }
         public string LastName { get; set; }
     }
