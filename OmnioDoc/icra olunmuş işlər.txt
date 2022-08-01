@@ -10,3 +10,5 @@
 		1.6)Delete user
 		1.7)Update user
 		1.8)Change passward
+		1.9)Activate user
+		1.10)Deactivate user
