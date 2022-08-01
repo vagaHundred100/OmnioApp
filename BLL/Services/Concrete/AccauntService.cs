@@ -45,14 +45,14 @@ namespace BLL.Services.Concrete
                                                    {"User with such name does not exist" },code);
             }
 
-            var result = await _userManeger.SetLockoutEnabledAsync(user, false);
+            user.IsEnabled = true;
+            var result = await _userManeger.UpdateAsync(user);
             if (!result.Succeeded)
             {
-                var code = (int)HttpStatusCode.BadRequest;
+                var code = (int)HttpStatusCode.Forbidden;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages,code);
+                return CreateUnsuccessifullResponse(errorMessages, code);
             }
-
             return new ServiceResponce();
         }
 
@@ -67,12 +67,13 @@ namespace BLL.Services.Concrete
                                                    {"User with such name does not exist" },code);
             }
 
-            var result = await _userManeger.SetLockoutEnabledAsync(user, true);
+            user.IsEnabled = false;
+            var result = await _userManeger.UpdateAsync(user);
             if (!result.Succeeded)
             {
-                var code = (int)HttpStatusCode.BadRequest;
+                var code = (int)HttpStatusCode.Forbidden;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages,code);
+                return CreateUnsuccessifullResponse(errorMessages, code);
             }
 
             return new ServiceResponce();
