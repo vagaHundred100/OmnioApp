@@ -12,14 +12,12 @@
 		1.8)Change passward
 		1.9)Activate user
 		1.10)Deactivate user
+		1.11) Search funksionalligi
 
  
  Icra olunmamish ishler :
 	
-	1)Search funksionnallig -- 
-		1.1)hardaki 5 user propertisine gore axtarish mumkun ola bilsin -- 
-			Name,Surname , Email , username,Role,Tenant
-		1.2) User isteniler fildleri bosh saxlaya biler
+
 
 	2)User profiler etmek - hardaki user oz datasini paroldan bashqa modefiy ede bilsin
 		2.1)User shekil qoya biler, deyishe biler
