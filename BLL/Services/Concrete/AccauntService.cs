@@ -307,7 +307,7 @@ namespace BLL.Services.Concrete
             {
                 if (localUsers.Count() != 0)
                 {
-                    localUsers = localUsers.Where(c => c.LastName == model.LastName);
+                    localUsers = await Task<List<User>>.Run(() => localUsers.Where(c => c.LastName == model.LastName));
                 }
                 else
                 {
@@ -320,21 +320,27 @@ namespace BLL.Services.Concrete
                 if (localUsers.Count() != 0)
                 {
                     localUsers = Enumerable.Empty<User>().AsQueryable();
-                    foreach (var user in localUsers)
+                    await Task.Run(async () =>
                     {
-                        var roles = await _userManeger.GetRolesAsync(user);
-                        var hasRole = roles.Any(role => role == model.Role);
-                        if (hasRole) localUsers.Append(user);
-                    }
+                        foreach (var user in localUsers)
+                        {
+                            var roles = await _userManeger.GetRolesAsync(user);
+                            var hasRole = roles.Any(role => role == model.Role);
+                            if (hasRole) localUsers.Append(user);
+                        }
+                    });
                 }
                 else
                 {
-                    foreach (var user in _userManeger.Users)
+                    await Task.Run(async () =>
                     {
-                        var roles = await _userManeger.GetRolesAsync(user);
-                        var hasRole = roles.Any(role => role == model.Role);
-                        if (hasRole) localUsers.Append(user);
-                    }
+                        foreach (var user in _userManeger.Users)
+                        {
+                            var roles = await _userManeger.GetRolesAsync(user);
+                            var hasRole = roles.Any(role => role == model.Role);
+                            if (hasRole) localUsers.Append(user);
+                        }
+                    });
                 }
             }
 
