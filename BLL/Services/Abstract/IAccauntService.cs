@@ -11,6 +11,7 @@ namespace BLL.Services.Abstract
 {
     public interface IAccauntService
     {
+        Task<ServiceResponceWithData<List<User>>> SearchAsync(SearchDTO model);
         Task<ServiceResponce> ActivateUserAsync(string userName);
         Task<ServiceResponce> AddUserToRoleAsync(string userName, string role);
         Task<ServiceResponce> ChangePasswordAsync(ChangePasswordDTO model);
