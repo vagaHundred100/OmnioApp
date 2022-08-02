@@ -163,5 +163,19 @@ namespace OnionApp.Controllers
             return Ok(response);
         }
 
+        [HttpGet("Search")]
+        public async Task<IActionResult> SearchAsync(SearchDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _accauntService.SearchAsync(model);
+                return StatusCode(response.StatusCode, response);
+            }
+
+            return BadRequest();
+        }
+
+        
+
     }
 }
