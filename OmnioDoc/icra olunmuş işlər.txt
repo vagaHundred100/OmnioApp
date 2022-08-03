@@ -17,10 +17,8 @@
  
  Icra olunmamish ishler :
 
-	2)User profiler etmek - hardaki user oz datasini paroldan bashqa modefiy ede bilsin
-		2.1)User shekil qoya biler, deyishe biler
-		2.2)Oz yashadigi ve oxudugu yer haqqinda melumat vere biler
-		2.3)Oz activllik statusunu qoya biler yani bu deqiqe activdi yoxsa yox
+	2)User profiler etmek - hardaki user oz datasini paroldan bashqa modefiy ede bilsin   (to Valeh & Vaqif)
+		2.1)User shekil qoya biler, deyishe biler (sekil path ile upload olunur)		
 		
 
 	3)Chat funksionnaligini yaratmaq  -- whatsapa oxshar 
@@ -45,3 +43,7 @@
 	3.7 chat ve dashboard qurulannan sonra yazilacaq.
 	4.5 legv elemey.
 
+
+
+	-------SAMIRS-----------
+	public async Task<ServiceResponce> ResetPassword(UserResetPasswordDTO userChangePasswordDTO) -- Davam Etmek (by Valeh)
