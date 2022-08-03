@@ -6,6 +6,7 @@ using BLL.DTO;
 using BLL.Services.Abstract;
 using DAL.Domains;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -286,32 +287,32 @@ namespace BLL.Services.Concrete
 
             if (model.UserName != null)
             {
-                var users = await Task<List<User>>.Run(() =>  _userManeger.Users.Where(c => c.UserName == model.UserName).ToList());
+                var users = await _userManeger.Users.Where(c => c.UserName == model.UserName).ToListAsync();
                 return new ServiceResponceWithData<List<User>>() { Data = users, Success = true };
             }
             if (model.Email != null)
             {
-                var users = await Task<List<User>>.Run(() => _userManeger.Users.Where(c => c.Email == model.Email).ToList());
+                var users = await  _userManeger.Users.Where(c => c.Email == model.Email).ToListAsync();
                 return new ServiceResponceWithData<List<User>>() { Data = users, Success = true };
             }
             if (model.PhoneNumber != null)
             {
-                var users = await Task<List<User>>.Run(() => _userManeger.Users.Where(c => c.PhoneNumber == model.PhoneNumber).ToList());
+                var users = await  _userManeger.Users.Where(c => c.PhoneNumber == model.PhoneNumber).ToListAsync();
                 return new ServiceResponceWithData<List<User>>() { Data = users, Success = true };
             }
             if (model.FirstName != null)
             {
-                localUsers = await Task<List<User>>.Run(() => _userManeger.Users.Where(c => c.FirstName == model.FirstName));
+                localUsers =   _userManeger.Users.Where(c => c.FirstName == model.FirstName);
             }
             if (model.LastName != null)
             {
                 if (localUsers.Count() != 0)
                 {
-                    localUsers = await Task<List<User>>.Run(() => localUsers.Where(c => c.LastName == model.LastName));
+                    localUsers = localUsers.Where(c => c.LastName == model.LastName);
                 }
                 else
                 {
-                    localUsers = await Task<List<User>>.Run(() => _userManeger.Users.Where(c => c.LastName == model.LastName));
+                    localUsers = _userManeger.Users.Where(c => c.LastName == model.LastName);
                 }
             }
 
