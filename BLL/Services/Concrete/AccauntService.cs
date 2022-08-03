@@ -6,6 +6,7 @@ using BLL.DTO;
 using BLL.Services.Abstract;
 using DAL.Domains;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -45,14 +46,14 @@ namespace BLL.Services.Concrete
                                                    {"User with such name does not exist" },code);
             }
 
-            var result = await _userManeger.SetLockoutEnabledAsync(user, false);
+            user.IsEnabled = true;
+            var result = await _userManeger.UpdateAsync(user);
             if (!result.Succeeded)
             {
-                var code = (int)HttpStatusCode.BadRequest;
+                var code = (int)HttpStatusCode.Forbidden;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages,code);
+                return CreateUnsuccessifullResponse(errorMessages, code);
             }
-
             return new ServiceResponce();
         }
 
@@ -67,12 +68,13 @@ namespace BLL.Services.Concrete
                                                    {"User with such name does not exist" },code);
             }
 
-            var result = await _userManeger.SetLockoutEnabledAsync(user, true);
+            user.IsEnabled = false;
+            var result = await _userManeger.UpdateAsync(user);
             if (!result.Succeeded)
             {
-                var code = (int)HttpStatusCode.BadRequest;
+                var code = (int)HttpStatusCode.Forbidden;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages,code);
+                return CreateUnsuccessifullResponse(errorMessages, code);
             }
 
             return new ServiceResponce();
@@ -278,6 +280,72 @@ namespace BLL.Services.Concrete
             return response;
         }
 
+        public async Task<ServiceResponceWithData<List<User>>> SearchAsync(SearchDTO model)
+        {
+            IQueryable<User> localUsers = Enumerable.Empty<User>().AsQueryable();
 
+
+            if (model.UserName != null)
+            {
+                var users = await _userManeger.Users.Where(c => c.UserName == model.UserName).ToListAsync();
+                return new ServiceResponceWithData<List<User>>() { Data = users, Success = true };
+            }
+            if (model.Email != null)
+            {
+                var users = await  _userManeger.Users.Where(c => c.Email == model.Email).ToListAsync();
+                return new ServiceResponceWithData<List<User>>() { Data = users, Success = true };
+            }
+            if (model.PhoneNumber != null)
+            {
+                var users = await  _userManeger.Users.Where(c => c.PhoneNumber == model.PhoneNumber).ToListAsync();
+                return new ServiceResponceWithData<List<User>>() { Data = users, Success = true };
+            }
+            if (model.FirstName != null)
+            {
+                localUsers =   _userManeger.Users.Where(c => c.FirstName == model.FirstName);
+            }
+            if (model.LastName != null)
+            {
+                if (localUsers.Count() != 0)
+                {
+                    localUsers = localUsers.Where(c => c.LastName == model.LastName);
+                }
+                else
+                {
+                    localUsers = _userManeger.Users.Where(c => c.LastName == model.LastName);
+                }
+            }
+
+            if (model.Role != null)
+            {
+                if (localUsers.Count() != 0)
+                {
+                    localUsers = Enumerable.Empty<User>().AsQueryable();
+                    await Task.Run(async () =>
+                    {
+                        foreach (var user in localUsers)
+                        {
+                            var roles = await _userManeger.GetRolesAsync(user);
+                            var hasRole = roles.Any(role => role == model.Role);
+                            if (hasRole) localUsers.Append(user);
+                        }
+                    });
+                }
+                else
+                {
+                    await Task.Run(async () =>
+                    {
+                        foreach (var user in _userManeger.Users)
+                        {
+                            var roles = await _userManeger.GetRolesAsync(user);
+                            var hasRole = roles.Any(role => role == model.Role);
+                            if (hasRole) localUsers.Append(user);
+                        }
+                    });
+                }
+            }
+
+            return new ServiceResponceWithData<List<User>>() { Data = localUsers.ToList(), Success = true }; ;
+        }
     }
 }

@@ -23,7 +23,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
- 
+using System.Security.Claims;
+
 namespace OnionApp
 {
     public class Startup
@@ -53,6 +54,14 @@ namespace OnionApp
 
             services.AddIdentity<User, IdentityRole>()
                     .AddEntityFrameworkStores<OnionDbContext>();
+
+            services.AddAuthorization(opts =>
+            {
+                opts.AddPolicy("OnlyForActive", policy =>
+                 {
+                     policy.RequireClaim("isEnabled", "True");
+                 });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
