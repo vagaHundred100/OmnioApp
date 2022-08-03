@@ -284,7 +284,6 @@ namespace BLL.Services.Concrete
         {
             IQueryable<User> localUsers = Enumerable.Empty<User>().AsQueryable();
 
-
             if (model.UserName != null)
             {
                 var users = await _userManager.Users.Where(c => c.UserName == model.UserName).ToListAsync();
