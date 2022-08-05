@@ -315,7 +315,7 @@ namespace BLL.Services.Concrete
             {
                 if (prop.Name != "Role")
                 {
-                    users = FilterWithWhereByStringTypeProperty(users, prop, model);
+                    users = FilterWithWhere(users, prop, model);
                 }
                 else
                 {
@@ -332,7 +332,7 @@ namespace BLL.Services.Concrete
             return new ServiceResponceWithData<List<SearchResponseDTO>>() { Data = endResultList, Success = true };
         }
 
-        private IQueryable<SearchResponseDTO> FilterWithWhereByStringTypeProperty(IQueryable<SearchResponseDTO> collection,
+        private IQueryable<SearchResponseDTO> FilterWithWhere(IQueryable<SearchResponseDTO> collection,
                                                     PropertyInfo property, SearchDTO model)
         {
             var propertyName = property.Name;
