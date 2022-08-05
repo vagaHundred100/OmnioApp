@@ -6,6 +6,7 @@ using BLL.DTO;
 using BLL.Services.Abstract;
 using DAL.Context;
 using DAL.Domains;
+using DAL.Repositories.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -24,7 +25,7 @@ namespace BLL.Services.Concrete
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly OnionDbContext _contex;
+        private readonly IUserRoleRepository _userRoleRepository;
         private readonly IJWTTokenService _tokenService;
         private readonly JWTOptions _jwtSettings;
         private readonly IMapper _mapper;
@@ -33,13 +34,15 @@ namespace BLL.Services.Concrete
                               IOptionsSnapshot<JWTOptions> jwtSettings,
                               IMapper mapper,
                               UserManager<User> userRepository,
-                              OnionDbContext contex)
+                              RoleManager<IdentityRole> roleManager, 
+                              IUserRoleRepository userRoleRepository)
         {
             _tokenService = tokenService;
             _jwtSettings = jwtSettings.Value;
             _mapper = mapper;
             _userManager = userRepository;
-            _contex = contex;
+            _roleManager = roleManager;
+            _userRoleRepository = userRoleRepository;
         }
 
         public async Task<ServiceResponce> ActivateUserAsync(string id)
@@ -290,7 +293,7 @@ namespace BLL.Services.Concrete
         public async Task<ServiceResponceWithData<List<SearchResponseDTO>>> SearchAsync(SearchDTO model)
         {
             var users = from user in _userManager.Users
-                        join ur in _contex.UserRoles
+                        join ur in _userRoleRepository.GetAll()
                                on user.Id equals ur.UserId
                         select new SearchResponseDTO
                         {

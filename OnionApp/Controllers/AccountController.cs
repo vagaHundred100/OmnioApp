@@ -163,7 +163,8 @@ namespace OnionApp.Controllers
             return Ok(response);
         }
 
-        [HttpGet("Search")]
+        [HttpPost("Search")]
+        [AllowAnonymous]
         public async Task<IActionResult> SearchAsync(SearchDTO model)
         {
             if (ModelState.IsValid)
