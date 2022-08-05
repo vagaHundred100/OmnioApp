@@ -4,6 +4,7 @@ using BLL.Autorization.Concrete;
 using BLL.Domains;
 using BLL.DTO;
 using BLL.Services.Abstract;
+using DAL.Context;
 using DAL.Domains;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,9 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +23,8 @@ namespace BLL.Services.Concrete
     public class AccauntService : IAccauntService
     {
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly OnionDbContext _contex;
         private readonly IJWTTokenService _tokenService;
         private readonly JWTOptions _jwtSettings;
         private readonly IMapper _mapper;
@@ -27,12 +32,14 @@ namespace BLL.Services.Concrete
         public AccauntService(IJWTTokenService tokenService,
                               IOptionsSnapshot<JWTOptions> jwtSettings,
                               IMapper mapper,
-                              UserManager<User> userRepository)
+                              UserManager<User> userRepository,
+                              OnionDbContext contex)
         {
             _tokenService = tokenService;
             _jwtSettings = jwtSettings.Value;
             _mapper = mapper;
             _userManager = userRepository;
+            _contex = contex;
         }
 
         public async Task<ServiceResponce> ActivateUserAsync(string id)
@@ -280,92 +287,93 @@ namespace BLL.Services.Concrete
             return response;
         }
 
-        public async Task<ServiceResponceWithData<List<User>>> SearchAsync(SearchDTO model)
+        public async Task<ServiceResponceWithData<List<SearchResponseDTO>>> SearchAsync(SearchDTO model)
         {
-            IQueryable<User> localUsers = Enumerable.Empty<User>().AsQueryable();
+            var users = from user in _userManager.Users
+                        join ur in _contex.UserRoles
+                               on user.Id equals ur.UserId
+                        select new SearchResponseDTO
+                        {
+                            UserName = user.UserName,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            Roles = _roleManager.Roles
+                                    .Where(c => c.Id == ur.RoleId)
+                                    .Select(c => c.Name)
+                                    .ToList()
+                        };
 
-            if (model.UserName != null)
+            var startResult = users;
+
+            var props = typeof(SearchDTO).GetProperties();
+            foreach (var prop in props)
             {
-                var users = await _userManager.Users.Where(c => c.UserName == model.UserName).ToListAsync();
-                return new ServiceResponceWithData<List<User>>() { Data = users, Success = true };
-            }
-            if (model.Email != null)
-            {
-                var users = await _userManager.Users.Where(c => c.Email == model.Email).ToListAsync();
-                return new ServiceResponceWithData<List<User>>() { Data = users, Success = true };
-            }
-            if (model.PhoneNumber != null)
-            {
-                var users = await _userManager.Users.Where(c => c.PhoneNumber == model.PhoneNumber).ToListAsync();
-                return new ServiceResponceWithData<List<User>>() { Data = users, Success = true };
-            }
-            if (model.FirstName != null)
-            {
-                localUsers = _userManager.Users.Where(c => c.FirstName == model.FirstName);
-            }
-            if (model.LastName != null)
-            {
-                if (localUsers.Count() != 0)
+                if (prop.Name != "Role")
                 {
-                    localUsers = localUsers.Where(c => c.LastName == model.LastName);
+                    users = FilterWithWhereByStringTypeProperty(users, prop, model);
                 }
                 else
                 {
-                    localUsers = _userManager.Users.Where(c => c.LastName == model.LastName);
+                    if (model.Role != null)
+                    {
+                        var results = users.Where(c => c.Roles.Any(r => r == model.Role));
+                        users = results.Any() ? results : users;
+                    }
                 }
             }
 
-            if (model.Role != null)
-            {
-                if (localUsers.Count() != 0)
-                {
-                    localUsers = Enumerable.Empty<User>().AsQueryable();
-                    await Task.Run(async () =>
-                    {
-                        foreach (var user in localUsers)
-                        {
-                            var roles = await _userManager.GetRolesAsync(user);
-                            var hasRole = roles.Any(role => role == model.Role);
-                            if (hasRole) localUsers.Append(user);
-                        }
-                    });
-                }
-                else
-                {
-                    await Task.Run(async () =>
-                    {
-                        foreach (var user in _userManager.Users)
-                        {
-                            var roles = await _userManager.GetRolesAsync(user);
-                            var hasRole = roles.Any(role => role == model.Role);
-                            if (hasRole) localUsers.Append(user);
-                        }
-                    });
-                }
-            }
+            var endResultList = startResult == users ? new List<SearchResponseDTO>() : await users.ToListAsync();
 
-            return new ServiceResponceWithData<List<User>>() { Data = localUsers.ToList(), Success = true }; ;
+            return new ServiceResponceWithData<List<SearchResponseDTO>>() { Data = endResultList, Success = true };
         }
+
+        private IQueryable<SearchResponseDTO> FilterWithWhereByStringTypeProperty(IQueryable<SearchResponseDTO> collection,
+                                                    PropertyInfo property, SearchDTO model)
+        {
+            var propertyName = property.Name;
+            var modelPropVal = property.GetValue(model);
+
+            if (modelPropVal == null) return collection;
+
+            dynamic dynamicVal= CastValue(modelPropVal);
+            if (dynamicVal == null) return collection;
+
+            string condition = String.Format("{0} == \"{1}\"", propertyName, dynamicVal);
+            var fillteredColl = collection.Where(condition);
+            return fillteredColl.Any() ? fillteredColl : collection;
+        }
+
+        private dynamic CastValue(object value)
+        {
+            if (value is int) return value as int?;
+            if (value is double) return value as double?;
+            if (value is float) return value as float?;
+            if (value is string) return value as string;
+            return null;
+        }
+    }
 
 
 
         #region New Task From Samir
-        public async Task<ServiceResponce> ResetPassword(UserResetPasswordDTO userChangePasswordDTO)
-        {
-            IdentityResult result = null;
-            User user = _userManager.Users.SingleOrDefault(u => u.Id == userChangePasswordDTO.UserId);
-            if (user == null)
-            {
-                //return new OperationResult(false, RequestResults.UserNotFound);
-            }
-            string passResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-            result = await _userManager.ResetPasswordAsync(user, passResetToken, userChangePasswordDTO.NewPassword);
-            if (!result.Succeeded)
-            {
-                // return new OperationResult(false, RequestResults.NotSuccessful, result.Errors);
-            }
-            return new null;
-        }
+        //public async Task<ServiceResponce> ResetPassword(UserResetPasswordDTO userChangePasswordDTO)
+        //{
+        //    IdentityResult result = null;
+        //    User user = _userManager.Users.SingleOrDefault(u => u.Id == userChangePasswordDTO.UserId);
+        //    if (user == null)
+        //    {
+        //        //return new OperationResult(false, RequestResults.UserNotFound);
+        //    }
+        //    string passResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+        //    result = await _userManager.ResetPasswordAsync(user, passResetToken, userChangePasswordDTO.NewPassword);
+        //    if (!result.Succeeded)
+        //    {
+        //        // return new OperationResult(false, RequestResults.NotSuccessful, result.Errors);
+        //    }
+        //    return new null;
+        //}
 
         // metod olmali User profiler
 
@@ -373,5 +381,5 @@ namespace BLL.Services.Concrete
 
 
         #endregion
-    }
+    
 }
