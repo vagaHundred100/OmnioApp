@@ -24,6 +24,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
 using System.Security.Claims;
+using DAL.Repositories.Abstract;
+using DAL.Repositories.Concrete;
 
 namespace OnionApp
 {
@@ -47,9 +49,10 @@ namespace OnionApp
             JWTOptions jwtSettings = Configuration.GetSection("JWTOptions").Get<JWTOptions>();
             services.AuthenticationJwtSettings(jwtSettings);
             services.SetBLLDependensis();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 
 
-        string conn = Configuration.GetConnectionString("Default");
+            string conn = Configuration.GetConnectionString("Default");
             services.AddDbContext<OnionDbContext>(options => options.UseSqlServer(conn));
 
             services.AddIdentity<User, IdentityRole>()
