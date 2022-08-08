@@ -80,7 +80,7 @@ namespace OnionApp.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateAsync(UpdateDTO model)
+        public async Task<IActionResult> UpdateAsync([FromForm] UpdateDTO model)
         {
             if (ModelState.IsValid)
             {

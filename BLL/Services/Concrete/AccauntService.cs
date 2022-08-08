@@ -34,15 +34,13 @@ namespace BLL.Services.Concrete
         private readonly JWTOptions _jwtSettings;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _enviranment;
-        private readonly OnionDbContext _context;
         public AccauntService(IJWTTokenService tokenService,
                               IOptionsSnapshot<JWTOptions> jwtSettings,
                               IMapper mapper,
                               UserManager<User> userRepository,
                               RoleManager<IdentityRole> roleManager,
                               IUserRoleRepository userRoleRepository,
-                              IWebHostEnvironment enviranment, 
-                              OnionDbContext context)
+                              IWebHostEnvironment enviranment )
         {
             _tokenService = tokenService;
             _jwtSettings = jwtSettings.Value;
@@ -51,7 +49,6 @@ namespace BLL.Services.Concrete
             _roleManager = roleManager;
             _userRoleRepository = userRoleRepository;
             _enviranment = enviranment;
-            _context = context;
         }
 
         public async Task<ServiceResponce> ActivateUserAsync(string id)
@@ -182,11 +179,17 @@ namespace BLL.Services.Concrete
         public async Task<ServiceResponce> RegisterAsync(RegisterDTO model)
         {
             var user = new User();
-            var image = new Image();
-            image.File = model.ImageFile;
-            image.Name = model.ImageFile.FileName;
-            user.Image = image;
+           
             user = _mapper.Map<RegisterDTO,User>(model,user);
+            var image = CreateImage(model.ImageFile);
+
+            if(image == null)
+            {
+                List<string> errorMessages = new List<string> { "Could not upload image" };
+                CreateUnsuccessifullResponse(errorMessages, (int)HttpStatusCode.BadRequest);
+            }
+
+            user.Image = image;
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (!result.Succeeded)
@@ -194,13 +197,6 @@ namespace BLL.Services.Concrete
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
                 var code = (int)HttpStatusCode.Conflict;
                 return CreateUnsuccessifullResponse(errorMessages, code);
-            }
-
-            var response = UploadImage(image);
-
-            if (!response.Success)
-            {
-                return response;
             }
 
             return new ServiceResponce();
@@ -256,8 +252,17 @@ namespace BLL.Services.Concrete
 
         public async Task<ServiceResponce> UpdateUserAsync(UpdateDTO model)
         {
-            var user = await _userManager.FindByNameAsync(model.UserName);
+            var users = _userManager.Users.Include(c => c.Image);
+            var user = users.Where(c => c.UserName == model.UserName).SingleOrDefault();
             var updatedUser = _mapper.Map<UpdateDTO, User>(model, user);
+            var image = ChangeImage(model.ImageFile, updatedUser.Image);
+
+            if (image == null)
+            {
+                List<string> errorMessages = new List<string> { "Could not upload image" };
+                CreateUnsuccessifullResponse(errorMessages, (int)HttpStatusCode.BadRequest);
+            }
+
             var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
@@ -311,28 +316,50 @@ namespace BLL.Services.Concrete
             return response;
         }
 
-        private ServiceResponce UploadImage(Image img)
+        private string UploadImage(IFormFile file)
         {
-            if (img.File.Length > 0)
+            if (file.Length > 0)
             {
                 string foldeerPath = _enviranment.WebRootPath + "\\images\\";
                 if (!Directory.Exists(foldeerPath))
                 {
                     Directory.CreateDirectory(foldeerPath);
                 }
-                string filePath = Path.Combine(foldeerPath, img.File.FileName);
+                string filePath = Path.Combine(foldeerPath, file.FileName);
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    img.File.CopyTo(fileStream);
+                    file.CopyTo(fileStream);
                     fileStream.Flush();
                 }
-                return new ServiceResponce();
+                return filePath;
             }
             else
             {
-                return CreateUnsuccessifullResponse(new List<string>() { "there was no files" }, 
-                                                   (int)HttpStatusCode.NotFound);
+                return null;
             }
+        }
+
+        private Image CreateImage(IFormFile file)
+        {
+            var image = new Image();
+            image.Name = file.FileName;
+            var filePath = UploadImage(file);
+            if (filePath == null) return null;
+            image.FilePath = filePath;
+            return image;
+        }
+        private Image ChangeImage(IFormFile file,Image image)
+        {
+            string path = image.FilePath;
+            File.Delete(path);
+            var newPath = UploadImage(file);
+
+            if (newPath == null) return null;
+
+            image.FilePath = newPath;
+            image.Name = file.FileName;
+            return image;
+
         }
 
         #region SearchMethod

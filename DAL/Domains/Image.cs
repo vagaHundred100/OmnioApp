@@ -19,5 +19,6 @@ namespace DAL.Domains
         public IFormFile File { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
+        public string FilePath { get; set; }
     }
 }

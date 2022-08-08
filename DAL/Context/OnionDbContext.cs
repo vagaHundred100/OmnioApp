@@ -20,7 +20,6 @@ namespace DAL.Context
         public OnionDbContext(DbContextOptions<OnionDbContext> options)
             :base(options)
         {
-            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
