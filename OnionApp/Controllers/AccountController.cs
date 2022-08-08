@@ -1,5 +1,6 @@
 ﻿using BLL.DTO;
 using BLL.Services.Abstract;
+using DAL.Domains;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +41,7 @@ namespace OnionApp.Controllers
 
         [AllowAnonymous]
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync(RegisterDTO model)
+        public async Task<IActionResult> RegisterAsync([FromForm]RegisterDTO model)
         {
             if (ModelState.IsValid)
             {
@@ -155,7 +156,7 @@ namespace OnionApp.Controllers
             return BadRequest();
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("GetAllUsers")]
         public IActionResult GetAllUsersAsync()
         {
@@ -177,6 +178,8 @@ namespace OnionApp.Controllers
         }
 
         
+
+
 
     }
 }

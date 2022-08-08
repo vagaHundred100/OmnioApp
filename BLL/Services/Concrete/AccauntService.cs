@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Storage.Blobs;
 using BLL.Autorization.Abstract;
 using BLL.Autorization.Concrete;
 using BLL.Domains;
@@ -7,11 +8,14 @@ using BLL.Services.Abstract;
 using DAL.Context;
 using DAL.Domains;
 using DAL.Repositories.Abstract;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Net;
@@ -29,13 +33,16 @@ namespace BLL.Services.Concrete
         private readonly IJWTTokenService _tokenService;
         private readonly JWTOptions _jwtSettings;
         private readonly IMapper _mapper;
-
+        private readonly IWebHostEnvironment _enviranment;
+        private readonly OnionDbContext _context;
         public AccauntService(IJWTTokenService tokenService,
                               IOptionsSnapshot<JWTOptions> jwtSettings,
                               IMapper mapper,
                               UserManager<User> userRepository,
-                              RoleManager<IdentityRole> roleManager, 
-                              IUserRoleRepository userRoleRepository)
+                              RoleManager<IdentityRole> roleManager,
+                              IUserRoleRepository userRoleRepository,
+                              IWebHostEnvironment enviranment, 
+                              OnionDbContext context)
         {
             _tokenService = tokenService;
             _jwtSettings = jwtSettings.Value;
@@ -43,6 +50,8 @@ namespace BLL.Services.Concrete
             _userManager = userRepository;
             _roleManager = roleManager;
             _userRoleRepository = userRoleRepository;
+            _enviranment = enviranment;
+            _context = context;
         }
 
         public async Task<ServiceResponce> ActivateUserAsync(string id)
@@ -172,7 +181,12 @@ namespace BLL.Services.Concrete
 
         public async Task<ServiceResponce> RegisterAsync(RegisterDTO model)
         {
-            var user = _mapper.Map<User>(model);
+            var user = new User();
+            var image = new Image();
+            image.File = model.ImageFile;
+            image.Name = model.ImageFile.FileName;
+            user.Image = image;
+            user = _mapper.Map<RegisterDTO,User>(model,user);
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (!result.Succeeded)
@@ -180,6 +194,13 @@ namespace BLL.Services.Concrete
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
                 var code = (int)HttpStatusCode.Conflict;
                 return CreateUnsuccessifullResponse(errorMessages, code);
+            }
+
+            var response = UploadImage(image);
+
+            if (!response.Success)
+            {
+                return response;
             }
 
             return new ServiceResponce();
@@ -290,6 +311,31 @@ namespace BLL.Services.Concrete
             return response;
         }
 
+        private ServiceResponce UploadImage(Image img)
+        {
+            if (img.File.Length > 0)
+            {
+                string foldeerPath = _enviranment.WebRootPath + "\\images\\";
+                if (!Directory.Exists(foldeerPath))
+                {
+                    Directory.CreateDirectory(foldeerPath);
+                }
+                string filePath = Path.Combine(foldeerPath, img.File.FileName);
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    img.File.CopyTo(fileStream);
+                    fileStream.Flush();
+                }
+                return new ServiceResponce();
+            }
+            else
+            {
+                return CreateUnsuccessifullResponse(new List<string>() { "there was no files" }, 
+                                                   (int)HttpStatusCode.NotFound);
+            }
+        }
+
+        #region SearchMethod
         public async Task<ServiceResponceWithData<List<SearchResponseDTO>>> SearchAsync(SearchDTO model)
         {
             var users = from user in _userManager.Users
@@ -356,33 +402,34 @@ namespace BLL.Services.Concrete
             if (value is string) return value as string;
             return null;
         }
+        #endregion
     }
 
 
 
-        #region New Task From Samir
-        //public async Task<ServiceResponce> ResetPassword(UserResetPasswordDTO userChangePasswordDTO)
-        //{
-        //    IdentityResult result = null;
-        //    User user = _userManager.Users.SingleOrDefault(u => u.Id == userChangePasswordDTO.UserId);
-        //    if (user == null)
-        //    {
-        //        //return new OperationResult(false, RequestResults.UserNotFound);
-        //    }
-        //    string passResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-        //    result = await _userManager.ResetPasswordAsync(user, passResetToken, userChangePasswordDTO.NewPassword);
-        //    if (!result.Succeeded)
-        //    {
-        //        // return new OperationResult(false, RequestResults.NotSuccessful, result.Errors);
-        //    }
-        //    return new null;
-        //}
+    #region New Task From Samir
+    //public async Task<ServiceResponce> ResetPassword(UserResetPasswordDTO userChangePasswordDTO)
+    //{
+    //    IdentityResult result = null;
+    //    User user = _userManager.Users.SingleOrDefault(u => u.Id == userChangePasswordDTO.UserId);
+    //    if (user == null)
+    //    {
+    //        //return new OperationResult(false, RequestResults.UserNotFound);
+    //    }
+    //    string passResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+    //    result = await _userManager.ResetPasswordAsync(user, passResetToken, userChangePasswordDTO.NewPassword);
+    //    if (!result.Succeeded)
+    //    {
+    //        // return new OperationResult(false, RequestResults.NotSuccessful, result.Errors);
+    //    }
+    //    return new null;
+    //}
 
-        // metod olmali User profiler
-
-
+    // metod olmali User profiler
 
 
-        #endregion
-    
+
+
+    #endregion
+
 }

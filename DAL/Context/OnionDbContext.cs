@@ -15,6 +15,8 @@ namespace DAL.Context
     //string hamsinin id-si stringdir
     public class OnionDbContext : IdentityDbContext<User>
     {
+        public DbSet<Image> Images { get; set; }
+
         public OnionDbContext(DbContextOptions<OnionDbContext> options)
             :base(options)
         {
@@ -22,10 +24,16 @@ namespace DAL.Context
             Database.EnsureCreated();
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            builder.IncertUsersAndRoles();
-            base.OnModelCreating(builder);
+            modelBuilder.Entity<User>()
+                .HasOne(c => c.Image)
+                .WithOne(c => c.User)
+                .HasForeignKey<Image>(c => c.UserId);
+
+            modelBuilder.IncertUsersAndRoles();
+            base.OnModelCreating(modelBuilder);
         }
 
     }
