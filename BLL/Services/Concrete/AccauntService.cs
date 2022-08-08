@@ -141,11 +141,26 @@ namespace BLL.Services.Concrete
             return new ServiceResponce();
         }
 
-        public ServiceResponceWithData<List<User>> GetAllUsersAsync()
+        public ServiceResponceWithData<List<UserIndexDTO>> GetAllUsersAsync()
         {
             var response = new ServiceResponceWithData<List<User>>();
-            response.Data = _userManager.Users.ToList();
-            return response;
+            var users = _userManager.Users.Include(c => c.Image).ToList();
+
+            var userIndexs = _mapper.Map<List<User>, List<UserIndexDTO>>(users);
+
+            for (int i = 0; i < users.Count; i++)
+            {
+                if(users[i].Image != null)
+                {
+                    byte[] img = GetImage(users[i].Image);
+                    if (img != null)
+                    {
+                        userIndexs[i].ProfileImage = img;
+                    }
+                    
+                }
+            }
+            return new ServiceResponceWithData<List<UserIndexDTO>>() { Data = userIndexs };
         }
 
         public async Task<ServiceResponceWithData<string>> LoginAsync(LoginDTO model)
@@ -348,6 +363,7 @@ namespace BLL.Services.Concrete
             image.FilePath = filePath;
             return image;
         }
+
         private Image ChangeImage(IFormFile file,Image image)
         {
             string path = image.FilePath;
@@ -360,6 +376,20 @@ namespace BLL.Services.Concrete
             image.Name = file.FileName;
             return image;
 
+        }
+
+        private byte[] GetImage(Image img)
+        {
+            string path = img.FilePath;
+            if (File.Exists(path))
+            {
+                 byte[] val = File.ReadAllBytes(path);
+                 return val;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         #region SearchMethod
@@ -429,6 +459,7 @@ namespace BLL.Services.Concrete
             if (value is string) return value as string;
             return null;
         }
+
         #endregion
     }
 

@@ -17,7 +17,7 @@ namespace BLL.Services.Abstract
         Task<ServiceResponce> ChangePasswordAsync(ChangePasswordDTO model);
         Task<ServiceResponce> DeactivateUserAsync(string userName);
         Task<ServiceResponce> DeleteUserAsync(string userName);
-        ServiceResponceWithData<List<User>> GetAllUsersAsync();
+        ServiceResponceWithData<List<UserIndexDTO>> GetAllUsersAsync();
         Task<ServiceResponceWithData<string>> LoginAsync(LoginDTO model);
         Task<ServiceResponce> RegisterAsync(RegisterDTO model);
         Task<ServiceResponce> RemoveUserFromRoleAsync(string userName, string role);
