@@ -280,4 +280,31 @@ namespace BLL.Services.Concrete
 
 
     }
+<<<<<<< Updated upstream
 }
+=======
+
+
+
+        #region New Task From Samir
+        //public async Task<ServiceResponce> ResetPassword(UserResetPasswordDTO userChangePasswordDTO)
+        //{
+        //    IdentityResult result = null;
+        //    User user = _userManager.Users.SingleOrDefault(u => u.Id == userChangePasswordDTO.UserId);
+        //    if (user == null)
+        //    {
+        //        //return new OperationResult(false, RequestResults.UserNotFound);
+        //    }
+        //    string passResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+        //    result = await _userManager.ResetPasswordAsync(user, passResetToken, userChangePasswordDTO.NewPassword);
+        //    if (!result.Succeeded)
+        //    {
+        //        // return new OperationResult(false, RequestResults.NotSuccessful, result.Errors);
+        //    }
+        //    return new null;
+        //}
+
+        // metod olmali User profiler
+        #endregion
+}
+>>>>>>> Stashed changes
