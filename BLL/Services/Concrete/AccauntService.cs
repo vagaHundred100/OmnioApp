@@ -235,7 +235,7 @@ namespace BLL.Services.Concrete
 
         public async Task<ServiceResponce> UpdateUserAsync(UpdateDTO model)
         {
-            var user = await _userManager.FindByNameAsync(model.UserName);
+            var user =  await _userManager.FindByNameAsync(model.UserName);
             var updatedUser = _mapper.Map<UpdateDTO, User>(model, user);
             var result = await _userManager.UpdateAsync(user);
 

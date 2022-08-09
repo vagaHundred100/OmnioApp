@@ -50,6 +50,8 @@ namespace OnionApp
             services.AuthenticationJwtSettings(jwtSettings);
             services.SetBLLDependensis();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IChatBoxRepository, ChatBoxRepository>();
 
 
             string conn = Configuration.GetConnectionString("Default");
