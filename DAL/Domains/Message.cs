@@ -10,12 +10,9 @@ namespace DAL.Domains
         public string Content { get; set; }
         public object MyProperty { get; set; }
         public DateTime CreateDate { get; set; } = DateTime.Now;
-        public bool Status { get; set; }
+        public bool Status { get; set; } = false;
         public int FromUserId { get; set; }
         public ChatBox ChatBox { get; set; }
-
-
-
 
     }
 }
