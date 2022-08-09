@@ -13,5 +13,6 @@ namespace DAL.Domains
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public ICollection<ChatBox> ChatBoxes { get; set; }
+        public ICollection<Message> Messages { get; set; }
     }
 }
