@@ -23,7 +23,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
- 
+using System.Security.Claims;
+using DAL.Repositories.Abstract;
+using DAL.Repositories.Concrete;
+
 namespace OnionApp
 {
     public class Startup
@@ -46,13 +49,22 @@ namespace OnionApp
             JWTOptions jwtSettings = Configuration.GetSection("JWTOptions").Get<JWTOptions>();
             services.AuthenticationJwtSettings(jwtSettings);
             services.SetBLLDependensis();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 
 
-        string conn = Configuration.GetConnectionString("Default");
+            string conn = Configuration.GetConnectionString("Default");
             services.AddDbContext<OnionDbContext>(options => options.UseSqlServer(conn));
 
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, Role>()
                     .AddEntityFrameworkStores<OnionDbContext>();
+
+            services.AddAuthorization(opts =>
+            {
+                opts.AddPolicy("OnlyForActive", policy =>
+                 {
+                     policy.RequireClaim("isEnabled", "True");
+                 });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +85,7 @@ namespace OnionApp
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseStaticFiles();
 
             app.UseEndpoints(endpoints =>
             {

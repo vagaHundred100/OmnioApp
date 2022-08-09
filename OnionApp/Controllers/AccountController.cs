@@ -1,5 +1,6 @@
 ﻿using BLL.DTO;
 using BLL.Services.Abstract;
+using DAL.Domains;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 namespace OnionApp.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = "OnlyForActive")]
     [ApiController]
     [Route("[controller]")]
     public class AccountController : ControllerBase
@@ -39,7 +41,7 @@ namespace OnionApp.Controllers
 
         [AllowAnonymous]
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync(RegisterDTO model)
+        public async Task<IActionResult> RegisterAsync([FromForm]RegisterDTO model)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +80,7 @@ namespace OnionApp.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateAsync(UpdateDTO model)
+        public async Task<IActionResult> UpdateAsync([FromForm] UpdateDTO model)
         {
             if (ModelState.IsValid)
             {
@@ -91,11 +93,11 @@ namespace OnionApp.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("Delete")]
-        public async Task<IActionResult> DeleteAsync(string userName)
+        public async Task<IActionResult> DeleteAsync(string id)
         {
             if (ModelState.IsValid)
             {
-                var response = await _accauntService.DeleteUserAsync(userName);
+                var response = await _accauntService.DeleteUserAsync(id);
                 return StatusCode(response.StatusCode, response);
             }
 
@@ -104,11 +106,11 @@ namespace OnionApp.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("Activate")]
-        public async Task<IActionResult> ActivateUserAsync(string userName)
+        public async Task<IActionResult> ActivateUserAsync(string id)
         {
             if (ModelState.IsValid)
             {
-                var response = await _accauntService.ActivateUserAsync(userName);
+                var response = await _accauntService.ActivateUserAsync(id);
                 return StatusCode(response.StatusCode, response);
             }
 
@@ -117,11 +119,11 @@ namespace OnionApp.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("Deactivate")]
-        public async Task<IActionResult> DeactivateAync(string userName)
+        public async Task<IActionResult> DeactivateAync(string id)
         {
             if (ModelState.IsValid)
             {
-                var response = await _accauntService.DeactivateUserAsync(userName);
+                var response = await _accauntService.DeactivateUserAsync(id);
                 return StatusCode(response.StatusCode, response);
             }
 
@@ -130,11 +132,11 @@ namespace OnionApp.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("AddRoleToUser")]
-        public async Task<IActionResult> AddRoleToUserAsync(string userName, string role)
+        public async Task<IActionResult> AddRoleToUserAsync(string id, string role)
         {
             if (ModelState.IsValid)
             {
-                var response = await _accauntService.AddUserToRoleAsync(userName, role);
+                var response = await _accauntService.AddUserToRoleAsync(id, role);
                 return StatusCode(response.StatusCode, response);
             }
 
@@ -143,24 +145,41 @@ namespace OnionApp.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("RemoveRoleFromUser")]
-        public async Task<IActionResult> RemoveRoleFromUserAsync(string userName, string role)
+        public async Task<IActionResult> RemoveRoleFromUserAsync(string id, string role)
         {
             if (ModelState.IsValid)
             {
-                var response = await _accauntService.RemoveUserFromRoleAsync(userName, role);
+                var response = await _accauntService.RemoveUserFromRoleAsync(id, role);
                 return StatusCode(response.StatusCode, response);
             }
 
             return BadRequest();
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("GetAllUsers")]
         public IActionResult GetAllUsersAsync()
         {
             var response = _accauntService.GetAllUsersAsync();
             return Ok(response);
         }
+
+        [HttpPost("Search")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SearchAsync(SearchDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _accauntService.SearchAsync(model);
+                return StatusCode(response.StatusCode, response);
+            }
+
+            return BadRequest();
+        }
+
+
+
+
 
     }
 }
