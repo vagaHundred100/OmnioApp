@@ -12,5 +12,6 @@ namespace DAL.Domains
         public bool IsEnabled { get; set; } = true;
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public ICollection<ChatBox> ChatBoxes { get; set; }
     }
 }
