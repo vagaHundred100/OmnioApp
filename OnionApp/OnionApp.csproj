@@ -9,6 +9,7 @@
     <Content Remove="Domains\**" />
     <EmbeddedResource Remove="Domains\**" />
     <None Remove="Domains\**" />
+    <None Remove="Logs\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,4 +25,7 @@
     <ProjectReference Include="..\BLL\BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
 </Project>

@@ -79,7 +79,7 @@ namespace OnionApp
 
             app.UseMiddleware<ErrorHandlerMiddleware>();
 
-            app.UseSerilogRequestLogging();
+            //app.UseSerilogRequestLogging();
 
             app.UseRouting();
 
