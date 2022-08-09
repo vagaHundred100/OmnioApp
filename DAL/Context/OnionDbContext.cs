@@ -27,6 +27,8 @@ namespace DAL.Context
             builder.IncertUsersAndRoles();
             base.OnModelCreating(builder);
         }
+        DbSet<ChatBox> ChatBoxes { get; set; }
+        DbSet<Message> Messages { get; set; }
 
     }
 }
