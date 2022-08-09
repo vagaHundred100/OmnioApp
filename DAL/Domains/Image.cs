@@ -12,12 +12,11 @@ namespace DAL.Domains
     public class Image
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public Guid Id { get; set; } 
         public string Name { get; set; }
         [NotMapped]
         public IFormFile File { get; set; }
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         public User User { get; set; }
         public string FilePath { get; set; }
     }

@@ -9,7 +9,7 @@ namespace OnionApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Chat : ControllerBase
+    public class ChatController : ControllerBase
     {
     }
 }

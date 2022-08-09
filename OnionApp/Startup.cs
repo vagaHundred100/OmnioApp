@@ -55,7 +55,7 @@ namespace OnionApp
             string conn = Configuration.GetConnectionString("Default");
             services.AddDbContext<OnionDbContext>(options => options.UseSqlServer(conn));
 
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, Role>()
                     .AddEntityFrameworkStores<OnionDbContext>();
 
             services.AddAuthorization(opts =>

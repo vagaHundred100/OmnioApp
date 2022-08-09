@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Repositories.Abstract
+namespace DAL.Domains
 {
-    public interface IUserRoleRepository
+    public class Role : IdentityRole<Guid>
     {
-        IQueryable<IdentityUserRole<Guid>> GetAll();
+
     }
 }

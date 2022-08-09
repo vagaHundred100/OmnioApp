@@ -28,7 +28,7 @@ namespace BLL.Services.Concrete
     public class AccauntService : IAccauntService
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly IJWTTokenService _tokenService;
         private readonly JWTOptions _jwtSettings;
@@ -38,9 +38,9 @@ namespace BLL.Services.Concrete
                               IOptionsSnapshot<JWTOptions> jwtSettings,
                               IMapper mapper,
                               UserManager<User> userRepository,
-                              RoleManager<IdentityRole> roleManager,
+                              RoleManager<Role> roleManager,
                               IUserRoleRepository userRoleRepository,
-                              IWebHostEnvironment enviranment )
+                              IWebHostEnvironment enviranment)
         {
             _tokenService = tokenService;
             _jwtSettings = jwtSettings.Value;
@@ -150,14 +150,14 @@ namespace BLL.Services.Concrete
 
             for (int i = 0; i < users.Count; i++)
             {
-                if(users[i].Image != null)
+                if (users[i].Image != null)
                 {
                     byte[] img = GetImage(users[i].Image);
                     if (img != null)
                     {
                         userIndexs[i].ProfileImage = img;
                     }
-                    
+
                 }
             }
             return new ServiceResponceWithData<List<UserIndexDTO>>() { Data = userIndexs };
@@ -194,11 +194,11 @@ namespace BLL.Services.Concrete
         public async Task<ServiceResponce> RegisterAsync(RegisterDTO model)
         {
             var user = new User();
-           
-            user = _mapper.Map<RegisterDTO,User>(model,user);
+
+            user = _mapper.Map<RegisterDTO, User>(model, user);
             var image = CreateImage(model.ImageFile);
 
-            if(image == null)
+            if (image == null)
             {
                 List<string> errorMessages = new List<string> { "Could not upload image" };
                 CreateUnsuccessifullResponse(errorMessages, (int)HttpStatusCode.BadRequest);
@@ -331,6 +331,8 @@ namespace BLL.Services.Concrete
             return response;
         }
 
+        #region Image methods
+
         private string UploadImage(IFormFile file)
         {
             if (file.Length > 0)
@@ -364,7 +366,7 @@ namespace BLL.Services.Concrete
             return image;
         }
 
-        private Image ChangeImage(IFormFile file,Image image)
+        private Image ChangeImage(IFormFile file, Image image)
         {
             string path = image.FilePath;
             File.Delete(path);
@@ -383,8 +385,8 @@ namespace BLL.Services.Concrete
             string path = img.FilePath;
             if (File.Exists(path))
             {
-                 byte[] val = File.ReadAllBytes(path);
-                 return val;
+                byte[] val = File.ReadAllBytes(path);
+                return val;
             }
             else
             {
@@ -392,24 +394,30 @@ namespace BLL.Services.Concrete
             }
         }
 
+        #endregion
+
         #region SearchMethod
         public async Task<ServiceResponceWithData<List<SearchResponseDTO>>> SearchAsync(SearchDTO model)
         {
-            var users = from user in _userManager.Users
-                        join ur in _userRoleRepository.GetAll()
-                               on user.Id equals ur.UserId
-                        select new SearchResponseDTO
-                        {
-                            UserName = user.UserName,
-                            Email = user.Email,
-                            PhoneNumber = user.PhoneNumber,
-                            FirstName = user.FirstName,
-                            LastName = user.LastName,
-                            Roles = _roleManager.Roles
-                                    .Where(c => c.Id == ur.RoleId)
-                                    .Select(c => c.Name)
-                                    .ToList()
-                        };
+            var quarebelUsers = _userManager.Users;
+            var quarableRoles = _roleManager.Roles;
+            var quarabeleUserRoles = _userRoleRepository.GetAll();
+            var users =
+                from user in _userManager.Users
+                join ur in _userRoleRepository.GetAll()
+                       on user.Id equals ur.UserId
+                select new SearchResponseDTO
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Roles = _roleManager.Roles
+                            .Where(c => c.Id == ur.RoleId)
+                            .Select(c => c.Name)
+                            .ToList()
+                };
 
             var startResult = users;
 
@@ -443,7 +451,7 @@ namespace BLL.Services.Concrete
 
             if (modelPropVal == null) return collection;
 
-            dynamic dynamicVal= CastValue(modelPropVal);
+            dynamic dynamicVal = CastValue(modelPropVal);
             if (dynamicVal == null) return collection;
 
             string condition = String.Format("{0} == \"{1}\"", propertyName, dynamicVal);

@@ -18,7 +18,7 @@ namespace DAL.Repositories.Concrete
             _context = context;
         }
 
-        public IQueryable<IdentityUserRole<string>> GetAll()
+        public IQueryable<IdentityUserRole<Guid>> GetAll()
         {
             return _context.UserRoles;
         }

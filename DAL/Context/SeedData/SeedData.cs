@@ -14,9 +14,10 @@ namespace DAL.Context.SeedData
     {
         public static void IncertUsersAndRoles(this ModelBuilder modelBuilder)
         {
-            User user = new User()
+
+            User user1 = new User()
             {
-                Id = "b74ddd14-6340-4840-95c2-db12554843e5",
+                Id = Guid.NewGuid(),
                 UserName = "Admin",
                 Email = "admin@gmail.com",
                 LockoutEnabled = false,
@@ -28,7 +29,7 @@ namespace DAL.Context.SeedData
 
             User user2 = new User()
             {
-                Id = "29948c14-7554-434e-9772-5e6714faca71",
+                Id = Guid.NewGuid(),
                 UserName = "user",
                 Email = "vaga@gmail.com",
                 LockoutEnabled = false,
@@ -36,12 +37,12 @@ namespace DAL.Context.SeedData
                 FirstName = "Kunjut",
                 LastName = "Araxevich",
                 NormalizedUserName = "USER",
-                
+
             };
 
             User user3 = new User()
             {
-                Id = "8a47693f-3df7-4bd6-86cd-b95a7575993e",
+                Id = Guid.NewGuid(),
                 UserName = "vaga",
                 FirstName = "Vaqif",
                 LastName = "Qurbanov",
@@ -50,7 +51,7 @@ namespace DAL.Context.SeedData
             };
             User user4 = new User()
             {
-                Id = "f7402d95-c359-47a8-924b-de875403302b",
+                Id = Guid.NewGuid(),
                 UserName = "valeh",
                 FirstName = "Valeh",
                 LastName = "Gehramanov",
@@ -59,7 +60,7 @@ namespace DAL.Context.SeedData
             };
             User user5 = new User()
             {
-                Id = "734d5b7d-f547-480b-acdb-b966b5dbf0fb",
+                Id = Guid.NewGuid(),
                 UserName = "tural",
                 FirstName = "Tural",
                 LastName = "Gehramanov",
@@ -68,7 +69,7 @@ namespace DAL.Context.SeedData
             };
             User user6 = new User()
             {
-                Id = "48b66625-946c-47c0-a6f5-4c8b54423f60",
+                Id = Guid.NewGuid(),
                 UserName = "zeka",
                 FirstName = "Zeka",
                 LastName = "Qasimli",
@@ -77,7 +78,7 @@ namespace DAL.Context.SeedData
             };
             User user7 = new User()
             {
-                Id = "89d9f27a-0dfc-4015-bdbc-10822ca33548",
+                Id = Guid.NewGuid(),
                 UserName = "asif",
                 FirstName = "Asif",
                 LastName = "Qurbanov",
@@ -86,7 +87,7 @@ namespace DAL.Context.SeedData
             };
             User user8 = new User()
             {
-                Id = "aca90c9d-53fc-4f48-999c-ef5df6c861bb",
+                Id = Guid.NewGuid(),
                 UserName = "akif",
                 FirstName = "Akif",
                 LastName = "Qurbanov",
@@ -95,7 +96,7 @@ namespace DAL.Context.SeedData
             };
             User user9 = new User()
             {
-                Id = "fd1b723a-2585-40f1-aa53-b29dadd196cb",
+                Id = Guid.NewGuid(),
                 UserName = "kolya",
                 FirstName = "Kovalev",
                 LastName = "Chipiqa",
@@ -104,7 +105,7 @@ namespace DAL.Context.SeedData
             };
             User user10 = new User()
             {
-                Id = "dabc7eeb-3e7a-478b-bd2c-bef6d7eb9ed4",
+                Id = Guid.NewGuid(),
                 UserName = "kolya_mishkin",
                 FirstName = "Kovalev",
                 LastName = "Mishkin",
@@ -113,7 +114,7 @@ namespace DAL.Context.SeedData
             };
             User user11 = new User()
             {
-                Id = "25626188-42af-4ff2-b000-449282e009ce",
+                Id = Guid.NewGuid(),
                 UserName = "nastya",
                 FirstName = "Nastya",
                 LastName = "Kulikova",
@@ -122,7 +123,7 @@ namespace DAL.Context.SeedData
             };
             User user12 = new User()
             {
-                Id = "71d10d38-4f54-4351-bfa0-a0f482079da4",
+                Id = Guid.NewGuid(),
                 UserName = "zena",
                 FirstName = "Zena",
                 LastName = "Kulikova",
@@ -131,7 +132,7 @@ namespace DAL.Context.SeedData
             };
             User user13 = new User()
             {
-                Id = "5da69b83-cf12-4ef4-9adc-b38eceff1bbc",
+                Id = Guid.NewGuid(),
                 UserName = "pasha",
                 FirstName = "Pasha",
                 LastName = "Radeon",
@@ -140,7 +141,7 @@ namespace DAL.Context.SeedData
             };
             User user14 = new User()
             {
-                Id = "9b66ad9f-46c9-4a6f-b17a-b6a8c47a1e54",
+                Id = Guid.NewGuid(),
                 UserName = "pashkeyivich",
                 FirstName = "Pasha",
                 LastName = "Radeon",
@@ -149,7 +150,7 @@ namespace DAL.Context.SeedData
             };
             User user15 = new User()
             {
-                Id = "89b3cdc0-b37e-4212-bdcf-f3e4bcda979a",
+                Id = Guid.NewGuid(),
                 UserName = "vaga100",
                 FirstName = "Vaqif",
                 LastName = "Qurbanov",
@@ -158,8 +159,8 @@ namespace DAL.Context.SeedData
             };
 
             PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
-            var hashedPass = passwordHasher.HashPassword(user, "vaga100Akif1998@");
-            user.PasswordHash = hashedPass;
+            var hashedPass = passwordHasher.HashPassword(user1, "vaga100Akif1998@");
+            user1.PasswordHash = hashedPass;
             user2.PasswordHash = hashedPass;
             user3.PasswordHash = hashedPass;
             user4.PasswordHash = hashedPass;
@@ -174,7 +175,7 @@ namespace DAL.Context.SeedData
             user14.PasswordHash = hashedPass;
             user15.PasswordHash = hashedPass;
 
-            modelBuilder.Entity<User>().HasData(user);
+            modelBuilder.Entity<User>().HasData(user1);
             modelBuilder.Entity<User>().HasData(user2);
             modelBuilder.Entity<User>().HasData(user3);
             modelBuilder.Entity<User>().HasData(user4);
@@ -191,32 +192,30 @@ namespace DAL.Context.SeedData
             modelBuilder.Entity<User>().HasData(user15);
 
 
-            modelBuilder.Entity<IdentityRole>().HasData(
-                new IdentityRole() { Id = "fab4fac1-c546-41de-aebc-a14da6895711", Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "ADMIN" },
-                new IdentityRole() { Id = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", Name = "User", ConcurrencyStamp = "2", NormalizedName = "USER" }
+            Role userRole = new Role {Id = Guid.NewGuid(), Name = "User", 
+                                      NormalizedName = "USER" };
+            Role adminRole = new Role{Id = Guid.NewGuid(),Name = "Admin", 
+                                      NormalizedName = "ADMIN" };
 
-                );
+            modelBuilder.Entity<Role>().HasData(userRole);
+            modelBuilder.Entity<Role>().HasData(adminRole);
 
-            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "29948c14-7554-434e-9772-5e6714faca71" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "89b3cdc0-b37e-4212-bdcf-f3e4bcda979a" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "9b66ad9f-46c9-4a6f-b17a-b6a8c47a1e54" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "5da69b83-cf12-4ef4-9adc-b38eceff1bbc" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "71d10d38-4f54-4351-bfa0-a0f482079da4" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "25626188-42af-4ff2-b000-449282e009ce" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "dabc7eeb-3e7a-478b-bd2c-bef6d7eb9ed4" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "fd1b723a-2585-40f1-aa53-b29dadd196cb" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "aca90c9d-53fc-4f48-999c-ef5df6c861bb" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "89d9f27a-0dfc-4015-bdbc-10822ca33548" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "48b66625-946c-47c0-a6f5-4c8b54423f60" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "734d5b7d-f547-480b-acdb-b966b5dbf0fb" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "f7402d95-c359-47a8-924b-de875403302b" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "8a47693f-3df7-4bd6-86cd-b95a7575993e" },
-                new IdentityUserRole<string>() { RoleId = "a4a9647b-cf6b-4dd0-bd1c-0ee3e946c57f", UserId = "b74ddd14-6340-4840-95c2-db12554843e5" },
-                new IdentityUserRole<string>() { RoleId = "fab4fac1-c546-41de-aebc-a14da6895711", UserId = "dabc7eeb-3e7a-478b-bd2c-bef6d7eb9ed4" },
-                new IdentityUserRole<string>() { RoleId = "fab4fac1-c546-41de-aebc-a14da6895711", UserId = "b74ddd14-6340-4840-95c2-db12554843e5" },
-                new IdentityUserRole<string>() { RoleId = "fab4fac1-c546-41de-aebc-a14da6895711", UserId = "89d9f27a-0dfc-4015-bdbc-10822ca33548" },
-                new IdentityUserRole<string>() { RoleId = "fab4fac1-c546-41de-aebc-a14da6895711", UserId = "25626188-42af-4ff2-b000-449282e009ce" }
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+                new IdentityUserRole<Guid>() { UserId = user2.Id, RoleId = userRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user3.Id, RoleId = userRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user4.Id, RoleId = userRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user5.Id, RoleId = userRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user6.Id, RoleId = userRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user7.Id, RoleId = userRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user8.Id, RoleId = userRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user9.Id, RoleId = userRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user10.Id, RoleId = userRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user11.Id, RoleId = userRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user12.Id, RoleId = userRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user13.Id, RoleId = adminRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user14.Id, RoleId = adminRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user15.Id, RoleId = adminRole.Id },
+                new IdentityUserRole<Guid>() { UserId = user1.Id, RoleId = adminRole.Id }
                 );
         }
     }
