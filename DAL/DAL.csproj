@@ -22,8 +22,6 @@
 
   <ItemGroup>
     <Folder Include="Helpers\DI\" />
-    <Folder Include="Repositories\Abstract\" />
-    <Folder Include="Repositories\Concrete\" />
   </ItemGroup>
 
 </Project>

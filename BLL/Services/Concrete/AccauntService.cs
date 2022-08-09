@@ -270,7 +270,15 @@ namespace BLL.Services.Concrete
             var users = _userManager.Users.Include(c => c.Image);
             var user = users.Where(c => c.UserName == model.UserName).SingleOrDefault();
             var updatedUser = _mapper.Map<UpdateDTO, User>(model, user);
-            var image = ChangeImage(model.ImageFile, updatedUser.Image);
+            Image image;
+            if(user.Image == null)
+            {
+                image = CreateImage(model.ImageFile);
+            }
+            else
+            {
+                image = ChangeImage(model.ImageFile, updatedUser.Image);
+            }
 
             if (image == null)
             {
@@ -278,6 +286,8 @@ namespace BLL.Services.Concrete
                 CreateUnsuccessifullResponse(errorMessages, (int)HttpStatusCode.BadRequest);
             }
 
+            user.Image = image;
+            user.SecurityStamp = Guid.NewGuid().ToString();
             var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
