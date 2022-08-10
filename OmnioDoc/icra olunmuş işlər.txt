@@ -23,10 +23,11 @@
 
 	3)Chat funksionnaligini yaratmaq  -- whatsapa oxshar 
 	    ------- 1ci etap--------
-		3.1)Bir user oburu uzere message gondere bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
+		3.1)Bir user diger uzere message gondere bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
 		3.2)Obirsi uzer gelen messagi oxuya bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
 		----- 2ci etap----
-		3.3)bu messaglar her ikisinde messag tetixcesinde gorune bilesi shekilde qalsin 
+
+		3.3)bu messaglar her ikisinde messag terixcesinde gorune bilesi shekilde qalsin 
 		3.4)Useer yazdigi messagi ozu ucun ve hammi ucun chatin yaddinan sile bilsin 
 		3.5) Youser yazdigi messagi redakte ede bilsin 
 		3.6)Chat da ne bash verirse hemin zaman butun ishtiraqcilar xeberi olmalidir
