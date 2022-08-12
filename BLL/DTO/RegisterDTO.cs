@@ -31,7 +31,6 @@ namespace BLL.DTO
         [Required(ErrorMessage = "Phonenumber is requared")]
         public string PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "Please Upload a Valid Image File. Only jpg format allowed")]
         [DataType(DataType.Upload)]
         [Display(Name = "Upload Product Image")]
         [NotMapped]

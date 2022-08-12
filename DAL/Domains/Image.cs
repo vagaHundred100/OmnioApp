@@ -15,7 +15,6 @@ namespace DAL.Domains
         public Guid Id { get; set; } 
         public string Name { get; set; }
         [NotMapped]
-        public IFormFile File { get; set; }
         public Guid UserId { get; set; }
         public User User { get; set; }
         public string FilePath { get; set; }

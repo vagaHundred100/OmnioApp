@@ -26,6 +26,7 @@ using Serilog;
 using System.Security.Claims;
 using DAL.Repositories.Abstract;
 using DAL.Repositories.Concrete;
+using DAL.Helpers.DI;
 
 namespace OnionApp
 {
@@ -45,12 +46,8 @@ namespace OnionApp
             services.AddControllers();
             services.AddSwagerSettings();
 
-            services.Configure<JWTOptions>(Configuration.GetSection("JWTOptions"));
-            JWTOptions jwtSettings = Configuration.GetSection("JWTOptions").Get<JWTOptions>();
-            services.AuthenticationJwtSettings(jwtSettings);
-            services.SetBLLDependensis();
-            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
-
+            services.SetBLLDependensis(Configuration);
+            services.SetDALDependensis(Configuration);
 
             string conn = Configuration.GetConnectionString("Default");
             services.AddDbContext<OnionDbContext>(options => options.UseSqlServer(conn));

@@ -15,7 +15,7 @@ namespace BLL.Helpers.Mapper
     {
         public AutoMapperProfile()
         {
-            CreateMap<RegisterDTO,User>();
+            CreateMap<RegisterDTO, User>();
             CreateMap<User,UserClaimsOptions>();
             CreateMap<UpdateDTO, User>();
             CreateMap<User, UserIndexDTO>();

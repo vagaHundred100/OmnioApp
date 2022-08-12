@@ -4,6 +4,7 @@ using BLL.Autorization.Abstract;
 using BLL.Autorization.Concrete;
 using BLL.Domains;
 using BLL.DTO;
+using BLL.Helpers.ConfigurationClasses;
 using BLL.Services.Abstract;
 using DAL.Context;
 using DAL.Domains;
@@ -34,13 +35,15 @@ namespace BLL.Services.Concrete
         private readonly JWTOptions _jwtSettings;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _enviranment;
+        private readonly ImageConfiguration _imageConfig;
         public AccauntService(IJWTTokenService tokenService,
                               IOptionsSnapshot<JWTOptions> jwtSettings,
                               IMapper mapper,
                               UserManager<User> userRepository,
                               RoleManager<Role> roleManager,
                               IUserRoleRepository userRoleRepository,
-                              IWebHostEnvironment enviranment)
+                              IWebHostEnvironment enviranment,
+                              IOptions<ImageConfiguration> imageOptions)
         {
             _tokenService = tokenService;
             _jwtSettings = jwtSettings.Value;
@@ -49,6 +52,7 @@ namespace BLL.Services.Concrete
             _roleManager = roleManager;
             _userRoleRepository = userRoleRepository;
             _enviranment = enviranment;
+            _imageConfig = imageOptions.Value;
         }
 
         public async Task<ServiceResponce> ActivateUserAsync(string id)
@@ -200,7 +204,7 @@ namespace BLL.Services.Concrete
 
             if (image == null)
             {
-                List<string> errorMessages = new List<string> { "Could not upload image" };
+                List<string> errorMessages = new List<string> { "Could not upload create image" };
                 CreateUnsuccessifullResponse(errorMessages, (int)HttpStatusCode.BadRequest);
             }
 
@@ -270,22 +274,15 @@ namespace BLL.Services.Concrete
             var users = _userManager.Users.Include(c => c.Image);
             var user = users.Where(c => c.UserName == model.UserName).SingleOrDefault();
             var updatedUser = _mapper.Map<UpdateDTO, User>(model, user);
+
             Image image;
-            if(user.Image == null)
-            {
-                image = CreateImage(model.ImageFile);
-            }
-            else
-            {
-                image = ChangeImage(model.ImageFile, updatedUser.Image);
-            }
+            image = CreateImage(model.ImageFile);
 
             if (image == null)
             {
                 List<string> errorMessages = new List<string> { "Could not upload image" };
                 CreateUnsuccessifullResponse(errorMessages, (int)HttpStatusCode.BadRequest);
             }
-
             user.Image = image;
             user.SecurityStamp = Guid.NewGuid().ToString();
             var result = await _userManager.UpdateAsync(user);
@@ -343,16 +340,17 @@ namespace BLL.Services.Concrete
 
         #region Image methods
 
-        private string UploadImage(IFormFile file)
+        private string UploadImage(IFormFile file, string newFileName)
         {
             if (file.Length > 0)
             {
-                string foldeerPath = _enviranment.WebRootPath + "\\images\\";
+                string foldeerPath = Path.Combine(_enviranment.WebRootPath, _imageConfig.ImageFolder);
                 if (!Directory.Exists(foldeerPath))
                 {
                     Directory.CreateDirectory(foldeerPath);
                 }
-                string filePath = Path.Combine(foldeerPath, file.FileName);
+
+                string filePath = Path.Combine(foldeerPath, newFileName);
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     file.CopyTo(fileStream);
@@ -368,26 +366,39 @@ namespace BLL.Services.Concrete
 
         private Image CreateImage(IFormFile file)
         {
-            var image = new Image();
-            image.Name = file.FileName;
-            var filePath = UploadImage(file);
-            if (filePath == null) return null;
-            image.FilePath = filePath;
+            Image image;
+            image = file == null ? CreateDefaultImage() : CreateNewImage(file);
             return image;
+
         }
 
-        private Image ChangeImage(IFormFile file, Image image)
+        private Image CreateNewImage(IFormFile file)
         {
-            string path = image.FilePath;
-            File.Delete(path);
-            var newPath = UploadImage(file);
+            string uniqueFileName = GenerateFileName(file.FileName);
+            string newFilePath = UploadImage(file, uniqueFileName);
+            return newFilePath == null ? null : new Image()
+            {
+                Name = uniqueFileName,
+                FilePath = newFilePath
+            };
+        }
 
-            if (newPath == null) return null;
+        private Image CreateDefaultImage()
+        {
+            string sourceFolderPath = Path.Combine(_enviranment.WebRootPath, _imageConfig.DefaultFolder);
+            string sourceFilePath = Path.Combine(sourceFolderPath, _imageConfig.DefaultImage);
+            string destFolderPath = Path.Combine(_enviranment.WebRootPath, _imageConfig.ImageFolder);
+            string destFileName = GenerateFileName(sourceFilePath);
+            string destFilePath = Path.Combine(destFolderPath, destFileName);
+            System.IO.File.Copy(sourceFilePath, destFilePath);
+            return new Image() { Name = destFileName, FilePath = destFilePath };
+        }
 
-            image.FilePath = newPath;
-            image.Name = file.FileName;
-            return image;
-
+        private string GenerateFileName(string filePath)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            string uniqueName = fileName + Guid.NewGuid().ToString() + Path.GetExtension(filePath);
+            return uniqueName;
         }
 
         private byte[] GetImage(Image img)
