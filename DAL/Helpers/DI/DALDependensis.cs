@@ -19,8 +19,8 @@ namespace DAL.Helpers.DI
         public static void SetDALDependensis(this IServiceCollection services,
                                                   IConfiguration configuration)
         {
-           
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
         }
     }
 }

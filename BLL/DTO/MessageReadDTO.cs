@@ -8,6 +8,8 @@ namespace BLL.DTO
 {
     public class MessageReadDTO
     {
-
+        public string Body { get; set; }
+        public bool ReadStatus { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 }

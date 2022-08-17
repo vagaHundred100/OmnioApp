@@ -15,12 +15,12 @@ namespace DAL.Domains
         public string Body { get; set; }
         public bool ReadStatus { get; set; } = false;
         public bool DeleteStatus { get; set; } = false;
-        public DateTime CreateDate { get; set; } 
+        public DateTime CreateDate { get; set; } = DateTime.Now;
 
-        public Guid? FromUserId { get; set; }
-        public User FromUser { get; set; }
+        public Guid? SenderID { get; set; }
+        public User Sender { get; set; }
 
-        public Guid? ToUserId { get; set; }
-        public User ToUser { get; set; }
+        public Guid? ReciverID { get; set; }
+        public User Reciver { get; set; }
     }
 }

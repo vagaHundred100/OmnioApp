@@ -1,10 +1,12 @@
 ﻿using DAL.Context;
 using DAL.Domains;
+using DAL.Helpers;
 using DAL.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,34 +20,69 @@ namespace DAL.Repositories.Concrete
         {
             _contex = contex;
         }
-        public void Create(Message message)
+
+        public Responce Create(Message message)
         {
-            if (message == null) throw new ArgumentNullException();
-            _contex.Messages.Add(message);
+            try
+            {
+                _contex.Messages.Add(message);
+                _contex.SaveChanges();
+                return ResponseCreator.CreateSuccessifullResponse();
+            }
+            catch(Exception ex)
+            {
+                List<string> errorMeesages = new List<string>() { ex.Message };
+                return ResponseCreator
+                    .CreateUnsuccessifullResponse(errorMeesages,
+                        (int)HttpStatusCode.InternalServerError);
+            }
         }
 
-        public void Delete(Guid id)
+        public Responce Delete(Guid id)
         {
             var message = _contex.Messages.Find(id);
-            if(message == null)
+            try
             {
-                throw new KeyNotFoundException();
+                _contex.Remove(message);
+                _contex.SaveChanges();
+                return ResponseCreator.CreateSuccessifullResponse();
             }
-            _contex.Remove(message);
-
+            catch (Exception ex)
+            {
+                List<string> errorMeesages = new List<string>() { ex.Message };
+                return ResponseCreator
+                    .CreateUnsuccessifullResponse(errorMeesages,
+                        (int)HttpStatusCode.InternalServerError);
+            }
         }
 
 
         public Message FindById(Guid id)
         {
             var message = _contex.Messages.Find(id);
-            if (message == null)
-            {
-                throw new KeyNotFoundException();
-            }
             return message;
         }
 
-       
+        public Responce Update(Message message)
+        {
+            try
+            {
+                _contex.Messages.Update(message);
+                _contex.SaveChanges();
+                return ResponseCreator.CreateSuccessifullResponse();
+            }
+            catch (Exception ex)
+            {
+                List<string> errorMeesages = new List<string>() { ex.Message };
+                return ResponseCreator
+                    .CreateUnsuccessifullResponse(errorMeesages,
+                        (int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public List<Message> GetAllMessages()
+        {
+            return _contex.Messages.ToList();
+        }
     }
 }

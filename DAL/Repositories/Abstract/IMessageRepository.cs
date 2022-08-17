@@ -9,9 +9,10 @@ namespace DAL.Repositories.Abstract
 {
     public interface IMessageRepository
     {
-        void Create(Message message);
-        void Delete(Guid id);
+        Responce Create(Message message);
+        Responce Update(Message message);
+        Responce Delete(Guid id);
         Message FindById(Guid id);
-
+        List<Message> GetAllMessages();
     }
 }

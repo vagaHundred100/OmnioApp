@@ -19,6 +19,7 @@ namespace BLL.Helpers.Mapper
             CreateMap<User,UserClaimsOptions>();
             CreateMap<UpdateDTO, User>();
             CreateMap<User, UserIndexDTO>();
+            CreateMap<Message, MessageReadDTO>();
         }
 
     }

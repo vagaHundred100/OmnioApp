@@ -1,5 +1,4 @@
-﻿using BLL.Domains;
-using BLL.DTO;
+﻿using BLL.DTO;
 using DAL.Domains;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace BLL.Services.Abstract
 {
     public interface IChatService
     {
-        ServiceResponce Write(Guid fromID,Guid toID,string body);
-        ServiceResponceWithData<List<MessageReadDTO>> Read(Guid UserID, List<Message>messages);
+        ResponceWithData<List<MessageReadDTO>> Read(string reciverID);
+        Task<Responce> WriteAsync(MessageWriteDTO messageDTO);
     }
 }

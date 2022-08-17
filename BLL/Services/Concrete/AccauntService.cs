@@ -2,8 +2,8 @@
 using Azure.Storage.Blobs;
 using BLL.Autorization.Abstract;
 using BLL.Autorization.Concrete;
-using BLL.Domains;
 using BLL.DTO;
+using DAL.Helpers;
 using BLL.Helpers.ConfigurationClasses;
 using BLL.Services.Abstract;
 using DAL.Context;
@@ -55,14 +55,14 @@ namespace BLL.Services.Concrete
             _imageConfig = imageOptions.Value;
         }
 
-        public async Task<ServiceResponce> ActivateUserAsync(string id)
+        public async Task<Responce> ActivateUserAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
                 var code = (int)HttpStatusCode.NotFound;
-                return CreateUnsuccessifullResponse(new List<string>
+                return ResponseCreator.CreateUnsuccessifullResponse(new List<string>
                                                    {"User with such name does not exist" }, code);
             }
 
@@ -72,19 +72,19 @@ namespace BLL.Services.Concrete
             {
                 var code = (int)HttpStatusCode.Forbidden;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages, code);
+                return ResponseCreator.CreateUnsuccessifullResponse(errorMessages, code);
             }
-            return new ServiceResponce();
+            return new Responce();
         }
 
-        public async Task<ServiceResponce> DeactivateUserAsync(string id)
+        public async Task<Responce> DeactivateUserAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
                 var code = (int)HttpStatusCode.NotFound;
-                return CreateUnsuccessifullResponse(new List<string>
+                return ResponseCreator.CreateUnsuccessifullResponse(new List<string>
                                                    {"User with such name does not exist" }, code);
             }
 
@@ -94,20 +94,20 @@ namespace BLL.Services.Concrete
             {
                 var code = (int)HttpStatusCode.Forbidden;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages, code);
+                return ResponseCreator.CreateUnsuccessifullResponse(errorMessages, code);
             }
 
-            return new ServiceResponce();
+            return new Responce();
         }
 
-        public async Task<ServiceResponce> ChangePasswordAsync(ChangePasswordDTO model)
+        public async Task<Responce> ChangePasswordAsync(ChangePasswordDTO model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
 
             if (user == null)
             {
                 var code = (int)HttpStatusCode.NotFound;
-                return CreateUnsuccessifullResponse(new List<string>
+                return ResponseCreator.CreateUnsuccessifullResponse(new List<string>
                                                    {"User with such name does not exist" }, code);
             }
 
@@ -116,20 +116,20 @@ namespace BLL.Services.Concrete
             {
                 var code = (int)HttpStatusCode.Forbidden;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages, code);
+                return ResponseCreator.CreateUnsuccessifullResponse(errorMessages, code);
             }
 
-            return new ServiceResponce();
+            return new Responce();
         }
 
-        public async Task<ServiceResponce> ResetPasswordAsync(RisetPasswordDTO model)
+        public async Task<Responce> ResetPasswordAsync(RisetPasswordDTO model)
         {
             var user = await _userManager.FindByNameAsync(model.UserId);
 
             if (user == null)
             {
                 var code = (int)HttpStatusCode.NotFound;
-                return CreateUnsuccessifullResponse(new List<string>
+                return ResponseCreator.CreateUnsuccessifullResponse(new List<string>
                                                    {"User with such name does not exist" }, code);
             }
 
@@ -139,15 +139,15 @@ namespace BLL.Services.Concrete
             {
                 var code = (int)HttpStatusCode.Forbidden;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages, code);
+                return ResponseCreator.CreateUnsuccessifullResponse(errorMessages, code);
             }
 
-            return new ServiceResponce();
+            return new Responce();
         }
 
-        public ServiceResponceWithData<List<UserIndexDTO>> GetAllUsersAsync()
+        public ResponceWithData<List<UserIndexDTO>> GetAllUsersAsync()
         {
-            var response = new ServiceResponceWithData<List<User>>();
+            var response = new ResponceWithData<List<User>>();
             var users = _userManager.Users.Include(c => c.Image).ToList();
 
             var userIndexs = _mapper.Map<List<User>, List<UserIndexDTO>>(users);
@@ -164,20 +164,20 @@ namespace BLL.Services.Concrete
 
                 }
             }
-            return new ServiceResponceWithData<List<UserIndexDTO>>() { Data = userIndexs };
+            return new ResponceWithData<List<UserIndexDTO>>() { Data = userIndexs };
         }
 
-        public async Task<ServiceResponceWithData<string>> LoginAsync(LoginDTO model)
+        public async Task<ResponceWithData<string>> LoginAsync(LoginDTO model)
         {
-            var response = new ServiceResponceWithData<string>();
+            var response = new ResponceWithData<string>();
 
             var user = await _userManager.FindByNameAsync(model.UserName);
 
             if (user == null)
             {
                 var code = (int)HttpStatusCode.NotFound;
-                return CreateUnsuccessifullResponseWithData<string>(new List<string>
-                                                           {"Wrong id" }, code);
+                return ResponseCreator.CreateUnsuccessifullResponseWithData<string>(new List<string>
+                                                           {"Wrong username" }, code);
             }
 
             var isCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
@@ -185,7 +185,7 @@ namespace BLL.Services.Concrete
             if (!isCorrect)
             {
                 var code = (int)HttpStatusCode.Forbidden;
-                return CreateUnsuccessifullResponseWithData<string>(new List<string> { "Wrong password" }, code);
+                return ResponseCreator.CreateUnsuccessifullResponseWithData<string>(new List<string> { "Wrong password" }, code);
             }
 
             var options = _mapper.Map<UserClaimsOptions>(user);
@@ -195,7 +195,7 @@ namespace BLL.Services.Concrete
             return response;
         }
 
-        public async Task<ServiceResponce> RegisterAsync(RegisterDTO model)
+        public async Task<Responce> RegisterAsync(RegisterDTO model)
         {
             var user = new User();
 
@@ -205,7 +205,7 @@ namespace BLL.Services.Concrete
             if (image == null)
             {
                 List<string> errorMessages = new List<string> { "Could not upload create image" };
-                CreateUnsuccessifullResponse(errorMessages, (int)HttpStatusCode.BadRequest);
+                ResponseCreator.CreateUnsuccessifullResponse(errorMessages, (int)HttpStatusCode.BadRequest);
             }
 
             user.Image = image;
@@ -215,20 +215,20 @@ namespace BLL.Services.Concrete
             {
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
                 var code = (int)HttpStatusCode.Conflict;
-                return CreateUnsuccessifullResponse(errorMessages, code);
+                return ResponseCreator.CreateUnsuccessifullResponse(errorMessages, code);
             }
 
-            return new ServiceResponce();
+            return new Responce();
         }
 
-        public async Task<ServiceResponce> AddUserToRoleAsync(string id, string role)
+        public async Task<Responce> AddUserToRoleAsync(string id, string role)
         {
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
                 var code = (int)HttpStatusCode.NotFound;
-                return CreateUnsuccessifullResponse(new List<string>
+                return ResponseCreator.CreateUnsuccessifullResponse(new List<string>
                                                    {"User with such name does not exist" }, code);
             }
 
@@ -238,22 +238,22 @@ namespace BLL.Services.Concrete
             {
                 var code = (int)HttpStatusCode.BadRequest;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages, code);
+                return ResponseCreator.CreateUnsuccessifullResponse(errorMessages, code);
             }
 
-            return new ServiceResponce();
+            return new Responce();
 
 
         }
 
-        public async Task<ServiceResponce> RemoveUserFromRoleAsync(string id, string role)
+        public async Task<Responce> RemoveUserFromRoleAsync(string id, string role)
         {
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
                 var code = (int)HttpStatusCode.NotFound;
-                return CreateUnsuccessifullResponse(new List<string>
+                return ResponseCreator.CreateUnsuccessifullResponse(new List<string>
                                                    {"User with such name does not exist" }, code);
             }
 
@@ -263,13 +263,13 @@ namespace BLL.Services.Concrete
             {
                 var code = (int)HttpStatusCode.BadRequest;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages, code);
+                return ResponseCreator.CreateUnsuccessifullResponse(errorMessages, code);
             }
 
-            return new ServiceResponce();
+            return new Responce();
         }
 
-        public async Task<ServiceResponce> UpdateUserAsync(UpdateDTO model)
+        public async Task<Responce> UpdateUserAsync(UpdateDTO model)
         {
             var users = _userManager.Users.Include(c => c.Image);
             var user = users.Where(c => c.UserName == model.UserName).SingleOrDefault();
@@ -281,7 +281,7 @@ namespace BLL.Services.Concrete
             if (image == null)
             {
                 List<string> errorMessages = new List<string> { "Could not upload image" };
-                CreateUnsuccessifullResponse(errorMessages, (int)HttpStatusCode.BadRequest);
+                ResponseCreator.CreateUnsuccessifullResponse(errorMessages, (int)HttpStatusCode.BadRequest);
             }
             user.Image = image;
             user.SecurityStamp = Guid.NewGuid().ToString();
@@ -291,20 +291,20 @@ namespace BLL.Services.Concrete
             {
                 var code = (int)HttpStatusCode.BadRequest;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages, code);
+                return ResponseCreator.CreateUnsuccessifullResponse(errorMessages, code);
             }
 
-            return new ServiceResponce();
+            return new Responce();
         }
 
-        public async Task<ServiceResponce> DeleteUserAsync(string id)
+        public async Task<Responce> DeleteUserAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
                 var code = (int)HttpStatusCode.NotFound;
-                return CreateUnsuccessifullResponse(new List<string>
+                return ResponseCreator.CreateUnsuccessifullResponse(new List<string>
                                                    {"User with such name does not exist" }, code);
             }
 
@@ -313,31 +313,14 @@ namespace BLL.Services.Concrete
             {
                 var code = (int)HttpStatusCode.BadRequest;
                 var errorMessages = result.Errors.Select(c => c.Description).ToList();
-                return CreateUnsuccessifullResponse(errorMessages, code);
+                return ResponseCreator.CreateUnsuccessifullResponse(errorMessages, code);
             }
 
-            return new ServiceResponce();
+            return new Responce();
 
         }
 
-        private ServiceResponce CreateUnsuccessifullResponse(List<string> errorMessages, int statusCode)
-        {
-            var response = new ServiceResponce();
-            response.StatusCode = statusCode;
-            response.Success = false;
-            response.ErrorMessages.AddRange(errorMessages);
-            return response;
-        }
-
-        private ServiceResponceWithData<T> CreateUnsuccessifullResponseWithData<T>(List<string> errorMessages, int statusCode)
-        {
-            var response = new ServiceResponceWithData<T>();
-            response.StatusCode = statusCode;
-            response.Success = false;
-            response.ErrorMessages.AddRange(errorMessages);
-            return response;
-        }
-
+       
         #region Image methods
 
         private string UploadImage(IFormFile file, string newFileName)
@@ -418,7 +401,7 @@ namespace BLL.Services.Concrete
         #endregion
 
         #region SearchMethod
-        public async Task<ServiceResponceWithData<List<SearchResponseDTO>>> SearchAsync(SearchDTO model)
+        public async Task<ResponceWithData<List<SearchResponseDTO>>> SearchAsync(SearchDTO model)
         {
             var quarebelUsers = _userManager.Users;
             var quarableRoles = _roleManager.Roles;
@@ -461,7 +444,7 @@ namespace BLL.Services.Concrete
 
             var endResultList = startResult == users ? new List<SearchResponseDTO>() : await users.ToListAsync();
 
-            return new ServiceResponceWithData<List<SearchResponseDTO>>() { Data = endResultList, Success = true };
+            return new ResponceWithData<List<SearchResponseDTO>>() { Data = endResultList, Success = true };
         }
 
         private IQueryable<SearchResponseDTO> FilterWithWhere(IQueryable<SearchResponseDTO> collection,

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DAL.Context.SeedData
 {
-    public static class SeedData
+    public static class SeedUsersAndRoles
     {
         public static void IncertUsersAndRoles(this ModelBuilder modelBuilder)
         {
@@ -36,7 +36,7 @@ namespace DAL.Context.SeedData
                 PhoneNumber = "1234567890",
                 FirstName = "Kunjut",
                 LastName = "Araxevich",
-                NormalizedUserName = "USER",
+                NormalizedUserName = "USER"
 
             };
 
@@ -48,6 +48,7 @@ namespace DAL.Context.SeedData
                 LastName = "Qurbanov",
                 PhoneNumber = "123",
                 Email = "vagif@gmail.com",
+                NormalizedUserName = "VAGA"
             };
             User user4 = new User()
             {
@@ -57,6 +58,7 @@ namespace DAL.Context.SeedData
                 LastName = "Gehramanov",
                 PhoneNumber = "1234",
                 Email = "valeh@gmail.com",
+                NormalizedUserName = "VALEH"
             };
             User user5 = new User()
             {
@@ -65,7 +67,8 @@ namespace DAL.Context.SeedData
                 FirstName = "Tural",
                 LastName = "Gehramanov",
                 PhoneNumber = "12345",
-                Email = "tural@gmail.com"
+                Email = "tural@gmail.com",
+                NormalizedUserName = "TURAL"
             };
             User user6 = new User()
             {
@@ -74,7 +77,8 @@ namespace DAL.Context.SeedData
                 FirstName = "Zeka",
                 LastName = "Qasimli",
                 PhoneNumber = "123456",
-                Email = "zeka@gmail.com"
+                Email = "zeka@gmail.com",
+                NormalizedUserName = "ZEKA"
             };
             User user7 = new User()
             {
@@ -83,7 +87,8 @@ namespace DAL.Context.SeedData
                 FirstName = "Asif",
                 LastName = "Qurbanov",
                 PhoneNumber = "123321",
-                Email = "asif@gmail.com"
+                Email = "asif@gmail.com",
+                NormalizedUserName = "ASIF"
             };
             User user8 = new User()
             {
@@ -92,7 +97,8 @@ namespace DAL.Context.SeedData
                 FirstName = "Akif",
                 LastName = "Qurbanov",
                 PhoneNumber = "1232117",
-                Email = "akif@gmail.com"
+                Email = "akif@gmail.com",
+                NormalizedUserName = "AKIF"
             };
             User user9 = new User()
             {
@@ -101,7 +107,8 @@ namespace DAL.Context.SeedData
                 FirstName = "Kovalev",
                 LastName = "Chipiqa",
                 PhoneNumber = "122223",
-                Email = "kolya@gmail.com"
+                Email = "kolya@gmail.com",
+                NormalizedUserName = "KOLYA"
             };
             User user10 = new User()
             {
@@ -110,7 +117,8 @@ namespace DAL.Context.SeedData
                 FirstName = "Kovalev",
                 LastName = "Mishkin",
                 PhoneNumber = "1231112",
-                Email = "mishkin@gmail.com"
+                Email = "mishkin@gmail.com",
+                NormalizedUserName = "KOLYA_MISHKIN"
             };
             User user11 = new User()
             {
@@ -119,7 +127,8 @@ namespace DAL.Context.SeedData
                 FirstName = "Nastya",
                 LastName = "Kulikova",
                 PhoneNumber = "123333",
-                Email = "nastya@gmail.com"
+                Email = "nastya@gmail.com",
+                NormalizedUserName = "NASTYA"
             };
             User user12 = new User()
             {
@@ -128,7 +137,8 @@ namespace DAL.Context.SeedData
                 FirstName = "Zena",
                 LastName = "Kulikova",
                 PhoneNumber = "333333",
-                Email = "zena@gmail.com"
+                Email = "zena@gmail.com",
+                NormalizedUserName = "ZENA"
             };
             User user13 = new User()
             {
@@ -137,7 +147,8 @@ namespace DAL.Context.SeedData
                 FirstName = "Pasha",
                 LastName = "Radeon",
                 PhoneNumber = "12321234",
-                Email = "pasha@gmail.com"
+                Email = "pasha@gmail.com",
+                NormalizedUserName = "PASHA"
             };
             User user14 = new User()
             {
@@ -146,7 +157,8 @@ namespace DAL.Context.SeedData
                 FirstName = "Pasha",
                 LastName = "Radeon",
                 PhoneNumber = "12311657",
-                Email = "pashkeyivich@gmail.com"
+                Email = "pashkeyivich@gmail.com",
+                NormalizedUserName = "PASHKEYIVICH"
             };
             User user15 = new User()
             {
@@ -155,7 +167,8 @@ namespace DAL.Context.SeedData
                 FirstName = "Vaqif",
                 LastName = "Qurbanov",
                 PhoneNumber = "123333999",
-                Email = "vagifGurbanov@gmail.com"
+                Email = "vagifGurbanov@gmail.com",
+                NormalizedUserName = "VAQIF"
             };
 
             PasswordHasher<User> passwordHasher = new PasswordHasher<User>();

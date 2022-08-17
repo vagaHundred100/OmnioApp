@@ -27,6 +27,7 @@ namespace BLL.Helpers.Dependencis
 
             services.AddScoped<IJWTTokenService, JWTTokenService>();
             services.AddScoped<IAccauntService, AccauntService>();
+            services.AddScoped<IChatService, ChatService>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLL.Domains
+namespace DAL.Domains
 {
 
-    public class ServiceResponce
+    public class Responce
     {
         public int StatusCode { get; set; } = 200;
         public bool Success { get; set; } = true;

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLL.Domains
+namespace DAL.Context.SeedData
 {
-    public class ServiceResponceWithData<T> : ServiceResponce
+    public static class SeedMessages
     {
-        public T Data { get; set; }
     }
 }

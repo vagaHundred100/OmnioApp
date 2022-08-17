@@ -34,15 +34,15 @@ namespace DAL.Context
                 .HasForeignKey<Image>(c => c.UserId);
 
             modelBuilder.Entity<Message>()
-                .HasOne(c => c.ToUser)
+                .HasOne(c => c.Sender)
                 .WithMany(c => c.SentMessages)
-                .HasForeignKey(c => c.ToUserId)
+                .HasForeignKey(c => c.SenderID)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             modelBuilder.Entity<Message>()
-                .HasOne(c => c.FromUser)
+                .HasOne(c => c.Reciver)
                 .WithMany(c => c.ReceivedMessages)
-                .HasForeignKey(c => c.FromUserId)
+                .HasForeignKey(c => c.ReciverID)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             modelBuilder.IncertUsersAndRoles();
