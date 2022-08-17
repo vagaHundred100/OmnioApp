@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace OnionApp.Controllers
 {
+    //no magic string
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Authorize(Policy = POLICY.ONLY_FOR_ACTIVE)]
