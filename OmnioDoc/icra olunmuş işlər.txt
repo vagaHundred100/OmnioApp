@@ -18,8 +18,9 @@
 	2.1)User shekil qoya biler, deyishe biler (sekil path ile upload olunur)	
 
 	3)Yazishma
-	3.1)Bir user oburu uzere message gondere bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
-	3.2)Obirsi uzer gelen messagi oxuya bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
+
+		3.1)Bir user oburu uzere message gondere bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
+		3.2)Obirsi uzer gelen messagi oxuya bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
  
  Icra olunmamish ishler :
 
