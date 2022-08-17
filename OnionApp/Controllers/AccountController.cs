@@ -4,6 +4,7 @@ using DAL.Domains;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OnionApp.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,7 +16,8 @@ using System.Threading.Tasks;
 namespace OnionApp.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Policy = "OnlyForActive")]
+    [Authorize(Roles = ROLES.ADMIN)]
+    [Authorize(Policy = POLICY.ONLY_FOR_ACTIVE)]
     [ApiController]
     [Route("[controller]")]
     public class AccountController : ControllerBase
@@ -55,7 +57,6 @@ namespace OnionApp.Controllers
             return BadRequest(model);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost("ChaingePassword")]
         public async Task<IActionResult> ChaingePasswordAsync(ChangePasswordDTO model)
         {
@@ -69,6 +70,7 @@ namespace OnionApp.Controllers
         }
 
         [HttpPost("ResetPassword")]
+        [Authorize(Roles = ROLES.USER)]
         public async Task<IActionResult> ResetPasswordAsync(RisetPasswordDTO model)
         {
             if (ModelState.IsValid)
@@ -80,7 +82,6 @@ namespace OnionApp.Controllers
             return BadRequest();
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateAsync([FromForm] UpdateDTO model)
         {
@@ -93,7 +94,6 @@ namespace OnionApp.Controllers
             return BadRequest(model);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete("Delete")]
         public async Task<IActionResult> DeleteAsync(string id)
         {
@@ -106,7 +106,6 @@ namespace OnionApp.Controllers
             return BadRequest();
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost("Activate")]
         public async Task<IActionResult> ActivateUserAsync(string id)
         {
@@ -119,7 +118,6 @@ namespace OnionApp.Controllers
             return BadRequest();
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost("Deactivate")]
         public async Task<IActionResult> DeactivateAync(string id)
         {
@@ -132,7 +130,6 @@ namespace OnionApp.Controllers
             return BadRequest();
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost("AddRoleToUser")]
         public async Task<IActionResult> AddRoleToUserAsync(string id, string role)
         {
@@ -145,7 +142,6 @@ namespace OnionApp.Controllers
             return BadRequest();
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost("RemoveRoleFromUser")]
         public async Task<IActionResult> RemoveRoleFromUserAsync(string id, string role)
         {
@@ -158,7 +154,6 @@ namespace OnionApp.Controllers
             return BadRequest();
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost("GetAllUsers")]
         public IActionResult GetAllUsersAsync()
         {
@@ -167,7 +162,7 @@ namespace OnionApp.Controllers
         }
 
         [HttpPost("Search")]
-        [AllowAnonymous]
+        [Authorize(Roles = ROLES.USER)]
         public async Task<IActionResult> SearchAsync(SearchDTO model)
         {
             if (ModelState.IsValid)
