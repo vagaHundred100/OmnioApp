@@ -10,7 +10,7 @@ namespace BLL.Services.Abstract
 {
     public interface IChatService
     {
-        ResponceWithData<List<MessageReadDTO>> Read(string reciverID);
+        Task<ResponceWithData<List<MessageReadDTO>>> ReadAsync(string reciverID);
         Task<Responce> WriteAsync(MessageWriteDTO messageDTO);
     }
 }

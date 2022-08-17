@@ -32,7 +32,7 @@ namespace BLL.Services.Concrete
             _context = context;
             _mapper = mapper;
         }
-        public ResponceWithData<List<MessageReadDTO>> Read(string reciverID)
+        public async Task<ResponceWithData<List<MessageReadDTO>>> ReadAsync(string reciverID)
         {
             Guid.TryParse(reciverID, out var reciverGuidID);
             var messages = _context.Users
@@ -46,7 +46,7 @@ namespace BLL.Services.Concrete
             foreach (var message in messages)
             {
                 message.ReadStatus = true;
-                var response = _messageRepository.Update(message);
+                var response = await _messageRepository.UpdateAsync(message);
                 if (!response.Success)
                 {
                     return ResponseCreator.CreateUnsuccessifullResponseWithData<List<MessageReadDTO>>(
@@ -87,7 +87,7 @@ namespace BLL.Services.Concrete
                 Body = messageDTO.Body
             };
 
-            var response = _messageRepository.Create(message);
+            var response = await _messageRepository.CreateAsync(message);
             return response;
         }
     }

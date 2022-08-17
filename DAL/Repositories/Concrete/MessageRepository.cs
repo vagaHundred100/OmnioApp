@@ -21,12 +21,12 @@ namespace DAL.Repositories.Concrete
             _contex = contex;
         }
 
-        public Responce Create(Message message)
+        public async Task<Responce> CreateAsync(Message message)
         {
             try
             {
                 _contex.Messages.Add(message);
-                _contex.SaveChanges();
+                await _contex.SaveChangesAsync();
                 return ResponseCreator.CreateSuccessifullResponse();
             }
             catch(Exception ex)
@@ -38,13 +38,13 @@ namespace DAL.Repositories.Concrete
             }
         }
 
-        public Responce Delete(Guid id)
+        public async Task<Responce> DeleteAsync(Guid id)
         {
-            var message = _contex.Messages.Find(id);
+            var message = await _contex.Messages.FindAsync(id);
             try
             {
                 _contex.Remove(message);
-                _contex.SaveChanges();
+                await _contex.SaveChangesAsync();
                 return ResponseCreator.CreateSuccessifullResponse();
             }
             catch (Exception ex)
@@ -57,18 +57,18 @@ namespace DAL.Repositories.Concrete
         }
 
 
-        public Message FindById(Guid id)
+        public async Task<Message> FindByIdAsync(Guid id)
         {
-            var message = _contex.Messages.Find(id);
+            var message = await _contex.Messages.FindAsync(id);
             return message;
         }
 
-        public Responce Update(Message message)
+        public async Task<Responce> UpdateAsync(Message message)
         {
             try
             {
                 _contex.Messages.Update(message);
-                _contex.SaveChanges();
+                await _contex.SaveChangesAsync();
                 return ResponseCreator.CreateSuccessifullResponse();
             }
             catch (Exception ex)
@@ -80,9 +80,9 @@ namespace DAL.Repositories.Concrete
             }
         }
 
-        public List<Message> GetAllMessages()
+        public async Task<List<Message>> GetAllMessagesAsync()
         {
-            return _contex.Messages.ToList();
+            return await _contex.Messages.ToListAsync();
         }
     }
 }

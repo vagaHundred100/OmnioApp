@@ -15,14 +15,16 @@
 		1.11) Search funksionalligi+
 
 	
-	2.1)User shekil qoya biler, deyishe biler (sekil path ile upload olunur)		
+	2.1)User shekil qoya biler, deyishe biler (sekil path ile upload olunur)	
+
+	3)Yazishma
+	3.1)Bir user oburu uzere message gondere bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
+	3.2)Obirsi uzer gelen messagi oxuya bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
  
  Icra olunmamish ishler :
 
 	3)Chat funksionnaligini yaratmaq  -- whatsapa oxshar 
 	    ------- 1ci etap--------
-		3.1)Bir user oburu uzere message gondere bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
-		3.2)Obirsi uzer gelen messagi oxuya bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
 		----- 2ci etap----
 		3.3)bu messaglar her ikisinde messag tetixcesinde gorune bilesi shekilde qalsin 
 		3.4)Useer yazdigi messagi ozu ucun ve hammi ucun chatin yaddinan sile bilsin 

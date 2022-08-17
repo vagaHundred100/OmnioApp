@@ -9,10 +9,11 @@ namespace DAL.Repositories.Abstract
 {
     public interface IMessageRepository
     {
-        Responce Create(Message message);
-        Responce Update(Message message);
-        Responce Delete(Guid id);
-        Message FindById(Guid id);
-        List<Message> GetAllMessages();
+        Task<Responce> CreateAsync(Message message);
+        Task<Responce> UpdateAsync(Message message);
+        Task<Responce> DeleteAsync(Guid id);
+        Task<Message> FindByIdAsync(Guid id);
+        Task<List<Message>> GetAllMessagesAsync();
+       
     }
 }

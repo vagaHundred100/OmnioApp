@@ -41,12 +41,12 @@ namespace OnionApp.Controllers
         }
 
         [HttpPost("read")]
-        public IActionResult ReadAsync()
+        public async Task<IActionResult> ReadAsync()
         {
             if (ModelState.IsValid)
             {
                 var reciverID = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var response =  _chatService.Read(reciverID);
+                var response =  await _chatService.ReadAsync(reciverID);
                 return StatusCode(response.StatusCode, response);
             }
 
