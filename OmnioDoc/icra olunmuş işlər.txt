@@ -29,14 +29,14 @@
 		----- 2ci etap----
 		3.3)bu messaglar her ikisinde messag tetixcesinde gorune bilesi shekilde qalsin 
 		3.4)Useer yazdigi messagi ozu ucun ve hammi ucun chatin yaddinan sile bilsin 
-		3.5) Youser yazdigi messagi redakte ede bilsin 
+		3.5) User yazdigi messaji redakte ede bilsin 
 		3.6)Chat da ne bash verirse hemin zaman butun ishtiraqcilar xeberi olmalidir
 		3.7)group chat funksionnalig ele olunmasi 
 
 	4)Dahbord yaratmaq -- hardaki umumi data gorunecek 
-		4.1)Neqeder messag yazilib
-		4.2)Neqeder messag oxunum
-		4.3)Neqeder messag oxunulmayib
+		4.1)Neqeder messaj yazilib
+		4.2)Neqeder messaj oxunum
+		4.3)Neqeder messaj oxunulmayib
 		4.4)Neqeder uzer var 
 		4.5)Userlerini ayliq , gunlik , ve saatliq aktivliyi
 		bu tarix arzinde nece user appdan istifade edib, neqeder ortalama 1 user messag yazib
