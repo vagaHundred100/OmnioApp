@@ -29,7 +29,7 @@ namespace DAL.Repositories.Concrete
                 await _contex.SaveChangesAsync();
                 return ResponseCreator.CreateSuccessifullResponse();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 List<string> errorMeesages = new List<string>() { ex.Message };
                 return ResponseCreator
@@ -80,9 +80,14 @@ namespace DAL.Repositories.Concrete
             }
         }
 
-        public async Task<List<Message>> GetAllMessagesAsync()
+        public async Task<List<Message>> GetAllMessagesAsListAsync()
         {
             return await _contex.Messages.ToListAsync();
+        }
+
+        public IQueryable<Message> GetAllMessages()
+        {
+            return _contex.Messages;
         }
     }
 }

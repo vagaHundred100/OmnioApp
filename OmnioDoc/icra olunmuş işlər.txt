@@ -13,38 +13,33 @@
 		1.9)Activate user+
 		1.10)Deactivate user+
 		1.11) Search funksionalligi+
-		----------TAM BITIB--------------
+
 	
 	2.1)User shekil qoya biler, deyishe biler (sekil path ile upload olunur)	
-	----------TAM BITIB--------------
+
 	3)Yazishma
 
-		3.1)Bir user oburu uzere message gondere bilsin -- Turla&Yahya (izah by Valeh_Vaqif) +
+		3.1)Bir user oburu uzere message gondere bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
+		3.2)Obirsi uzer gelen messagi oxuya bilsin -- Turla&Yahya (izah by Valeh_Vaqif)
  
- Icra olunmamish ishler :
-
-	1)User funksionalliq 
-		1.1) User ve Admin istenilen yazishmani PDF Formatda bazaya ve ya HDD Save etmelidir 
-
 	3)Chat funksionnaligini yaratmaq  -- whatsapa oxshar 
 	    ------- 1ci etap--------
-		3.2.1)Obirsi uzer gelen messagi oxuya bilsin --  () -
-				Write all message yazmaq hardaki gelen messaglar fromUserden olsun ve writeallmessage 
-					bu ana clasi qaytarsin hardaki onun yazdigi messaglar list shekilde olsun
-	    3.2.2)Get all recived message ve get all send messages  
-		3.2.3)Mesagge read with message id 
 		----- 2ci etap----
 		3.3)bu messaglar her ikisinde messag tetixcesinde gorune bilesi shekilde qalsin 
 		3.4)Useer yazdigi messagi ozu ucun ve hammi ucun chatin yaddinan sile bilsin 
-		3.5) User yazdigi messaji redakte ede bilsin 
-		3.6)Chat da ne bash verirse hemin zaman butun ishtiraqcilar xeberi olmalidir
+		3.5) Youser yazdigi messagi redakte ede bilsin 
+
+ Icra olunmamish ishler :
+
 		3.7)group chat funksionnalig ele olunmasi 
 
 	4)Dahbord yaratmaq -- hardaki umumi data gorunecek 
-		4.1)Neqeder messaj yazilib				Dapper vasitesiyle yazmaq
-		4.2)Neqeder messaj oxunum               Dapper vasitesiyle yazmaq
-		4.3)Neqeder messaj oxunulmayib          Dapper vasitesiyle yazmaq
+		4.1)Neqeder messag yazilib
+		4.2)Neqeder messag oxunum
+		4.3)Neqeder messag oxunulmayib
 		4.4)Neqeder uzer var 
+		4.5)Userlerini ayliq , gunlik , ve saatliq aktivliyi
+		bu tarix arzinde nece user appdan istifade edib, neqeder ortalama 1 user messag yazib
 			
 	
 	3.1 3.2 3.6 anlayis kimi merge elemey.
@@ -55,6 +50,3 @@
 
 	-------SAMIRS-----------
 	public async Task<ServiceResponce> ResetPassword(UserResetPasswordDTO userChangePasswordDTO) -- Davam Etmek (by Valeh)
-
-
-	Ishlerin sonunda lahiyeni stukturunu seliqeye salmaq tapshiriqi vermek 

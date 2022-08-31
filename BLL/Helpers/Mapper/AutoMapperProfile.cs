@@ -2,6 +2,7 @@
 using BLL.Autorization.Abstract;
 using BLL.Autorization.Concrete;
 using BLL.DTO;
+using BLL.Services.Abstract;
 using DAL.Domains;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace BLL.Helpers.Mapper
             CreateMap<UpdateDTO, User>();
             CreateMap<User, UserIndexDTO>();
             CreateMap<Message, MessageReadDTO>();
+            CreateMap<User,GroupedMessagesDTO>();
         }
 
     }

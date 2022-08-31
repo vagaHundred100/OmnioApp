@@ -32,36 +32,66 @@ namespace BLL.Services.Concrete
             _context = context;
             _mapper = mapper;
         }
-        public async Task<ResponceWithData<List<MessageReadDTO>>> ReadAsync(string reciverID)
+
+
+        public async Task<ResponceWithData<List<GroupedMessagesDTO>>> ReadAllSentMessagesAsync(string senderId)
         {
-            Guid.TryParse(reciverID, out var reciverGuidID);
-            var messages = _context.Users
-                .Include(c => c.ReceivedMessages)
-                .Where(c => c.Id == reciverGuidID)
-                .Single()
-                .ReceivedMessages?
-                .Where(c => c.DeleteStatus == false);
-                
-            List<MessageReadDTO> messagesToRead = new List<MessageReadDTO>();
-            foreach (var message in messages)
+            List<GroupedMessagesDTO> sendersWithMessagesDTO = new List<GroupedMessagesDTO>();
+            var messages = _messageRepository.GetAllMessages();
+            var sendersWithMessages = messages
+                .Include(m => m.Reciver)?
+                    .ThenInclude(c => c.Image)
+                .Where(c => c.SenderID == new Guid(senderId))
+                .Where(c => c.IsDeletedFromSender == false)
+                .AsEnumerable()
+                .GroupBy(m => m.Reciver);
+
+            foreach (var reciver in sendersWithMessages)
             {
-                message.ReadStatus = true;
-                var response = await _messageRepository.UpdateAsync(message);
-                if (!response.Success)
+                var senderDTO = _mapper.Map<GroupedMessagesDTO>(reciver.Key);
+                senderDTO.Messages = new List<MessageReadDTO>();
+                foreach (var message in reciver)
                 {
-                    return ResponseCreator.CreateUnsuccessifullResponseWithData<List<MessageReadDTO>>(
-                        response.ErrorMessages, response.StatusCode);
+                    message.ReadStatus = true;
+                    await _messageRepository.UpdateAsync(message);
+                    senderDTO.Messages.Add(_mapper.Map<MessageReadDTO>(message));
                 }
-                var readMessage = _mapper.Map<MessageReadDTO>(message);
-                messagesToRead.Add(readMessage);
+                sendersWithMessagesDTO.Add(senderDTO);
             }
 
-            return new ResponceWithData<List<MessageReadDTO>>() { Data = messagesToRead };
+            return new ResponceWithData<List<GroupedMessagesDTO>>() { Data = sendersWithMessagesDTO, Success = true };
+        }
 
+        public async Task<ResponceWithData<List<GroupedMessagesDTO>>> ReadAllRecivedMessagesAsync(string reciverID)
+        {
+            List<GroupedMessagesDTO> sendersWithMessagesDTO = new List<GroupedMessagesDTO>();
+            var messages = _messageRepository.GetAllMessages();
+            var sendersWithMessages = messages
+                .Include(m => m.Sender)?
+                    .ThenInclude(c => c.Image)
+                .Where(c => c.ReciverID == new Guid(reciverID))
+                .Where(c => c.IsDeletedFromReciver == false)
+                .AsEnumerable()
+                .GroupBy(m => m.Sender);
+
+            foreach (var sender in sendersWithMessages)
+            {
+                var senderDTO = _mapper.Map<GroupedMessagesDTO>(sender.Key);
+                senderDTO.Messages = new List<MessageReadDTO>();
+                foreach (var message in sender)
+                {
+                    message.ReadStatus = true;
+                    await _messageRepository.UpdateAsync(message);
+                    senderDTO.Messages.Add(_mapper.Map<MessageReadDTO>(message));
+                }
+                sendersWithMessagesDTO.Add(senderDTO);
+            }
+
+            return new ResponceWithData<List<GroupedMessagesDTO>>() { Data = sendersWithMessagesDTO, Success = true };
 
         }
 
-        public async Task<Responce> WriteAsync(MessageWriteDTO messageDTO)
+        public async Task<Responce> WriteMessageAsync(MessageWriteDTO messageDTO)
         {
             var sender = await _userManeger.FindByIdAsync(messageDTO.SenderId);
             var reciver = await _userManeger.FindByIdAsync(messageDTO.ReciverId);
@@ -90,5 +120,75 @@ namespace BLL.Services.Concrete
             var response = await _messageRepository.CreateAsync(message);
             return response;
         }
+
+        public async Task<Responce> DeleteMesageFromUserAsync(string messageStringId, string userStringId)
+        {
+            var userId = new Guid(userStringId);
+            var message = await _messageRepository.FindByIdAsync(new Guid(messageStringId));
+
+            if (message == null)
+            {
+                return ResponseCreator.CreateUnsuccessifullResponse(new[]
+                    { "Message was not found" }.ToList()
+                    , (int)HttpStatusCode.NotFound);
+            }
+
+            if (message.ReciverID == userId)
+            {
+                message.IsDeletedFromReciver = true;
+            }
+            else if (message.SenderID == userId)
+            {
+                message.IsDeletedFromSender = true;
+            }
+            else
+            {
+                return ResponseCreator.CreateUnsuccessifullResponse(new[]
+                    {"Current user does not contain this message" }.ToList()
+                    , (int)HttpStatusCode.NotFound);
+            }
+
+            await _messageRepository.UpdateAsync(message);
+            return ResponseCreator.CreateSuccessifullResponse();
+        }
+
+        public async Task<Responce> DeleteMessageFromChatAsync(string messageId, string userStringId)
+        {
+            var userId = new Guid(userStringId);
+            var message = await _messageRepository.FindByIdAsync(new Guid(messageId));
+
+            if (message == null)
+            {
+                return ResponseCreator.CreateUnsuccessifullResponse(new[]
+                    { "Message was not found" }.ToList()
+                    , (int)HttpStatusCode.NotFound);
+            }
+
+            if (message.ReciverID != userId && message.SenderID != userId)
+            {
+                return ResponseCreator.CreateUnsuccessifullResponse(new[]
+                   {"Current user does not contain this message" }.ToList()
+                   , (int)HttpStatusCode.NotFound);
+            }
+
+            message.IsDeletedFromReciver = true;
+            message.IsDeletedFromSender = true;
+            await _messageRepository.UpdateAsync(message);
+            return ResponseCreator.CreateSuccessifullResponse();
+        }
+
+        public async Task<Responce> UpdateMessage(string messageId)
+        {
+            var message = await _messageRepository.FindByIdAsync(new Guid(messageId));
+            if (message == null)
+            {
+                return ResponseCreator.CreateUnsuccessifullResponse(new[]
+                    { "Message was not found" }.ToList()
+                    , (int)HttpStatusCode.NotFound);
+            }
+            await _messageRepository.UpdateAsync(message);
+            return ResponseCreator.CreateSuccessifullResponse();
+        }
+
     }
 }

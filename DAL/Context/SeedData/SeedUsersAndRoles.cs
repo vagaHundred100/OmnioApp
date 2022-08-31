@@ -261,7 +261,7 @@ namespace DAL.Context.SeedData
         {
             modelBuilder.Entity<User>().HasData(users);
             modelBuilder.Entity<Role>().HasData(roles);
-            modelBuilder.Entity<IdentityRole<Guid>>().HasData(userRoles);
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(userRoles);
         }
     }
 }

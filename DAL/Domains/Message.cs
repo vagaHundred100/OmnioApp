@@ -14,13 +14,12 @@ namespace DAL.Domains
         public Guid Id { get; set; }
         public string Body { get; set; }
         public bool ReadStatus { get; set; } = false;
-        public bool DeleteStatus { get; set; } = false;
+        public bool IsDeletedFromSender { get; set; } = false;
+        public bool IsDeletedFromReciver { get; set; } = false;
         public DateTime CreateDate { get; set; } = DateTime.Now;
-
         public Guid? SenderID { get; set; }
-        public User Sender { get; set; }
-
         public Guid? ReciverID { get; set; }
+        public User Sender { get; set; }
         public User Reciver { get; set; }
     }
 }

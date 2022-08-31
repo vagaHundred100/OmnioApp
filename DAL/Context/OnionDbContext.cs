@@ -19,7 +19,7 @@ namespace DAL.Context
         public OnionDbContext(DbContextOptions<OnionDbContext> options)
             :base(options)
         {
-            Database.EnsureCreated();
+
         }
 
         public DbSet<Image> Images { get; set; }

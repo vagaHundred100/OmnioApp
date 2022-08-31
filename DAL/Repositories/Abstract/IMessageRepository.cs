@@ -13,7 +13,8 @@ namespace DAL.Repositories.Abstract
         Task<Responce> UpdateAsync(Message message);
         Task<Responce> DeleteAsync(Guid id);
         Task<Message> FindByIdAsync(Guid id);
-        Task<List<Message>> GetAllMessagesAsync();
-       
+        Task<List<Message>> GetAllMessagesAsListAsync();
+        IQueryable<Message> GetAllMessages();
+
     }
 }

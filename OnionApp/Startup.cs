@@ -50,7 +50,8 @@ namespace OnionApp
             services.SetDALDependensis(Configuration);
 
             string conn = Configuration.GetConnectionString("Default");
-            services.AddDbContext<OnionDbContext>(options => options.UseSqlServer(conn));
+            services.AddDbContext<OnionDbContext>(options => options.UseSqlServer(conn, 
+                     b => b.MigrationsAssembly("OnionApp")));
 
             services.AddIdentity<User, Role>()
                     .AddEntityFrameworkStores<OnionDbContext>();
